@@ -16,7 +16,7 @@ def string_to_date(s_date):
     year, month, day = int(year), int(month), int(day)
     return year, month, day
 
-# assignining relevent data types to the fields
+# Takes all string data and changes to relevent type
 
 
 def clean_data_types(day_dic):
@@ -37,7 +37,6 @@ def clean_data_types(day_dic):
             event = day_dic[k]
             if event == '':
                 day_dic[k] = None
-            pass
         # floats
         elif (k == "Mean VisibilityKm" or k == "Max VisibilityKm" or
                 k == "Min VisibilitykM" or k == "Precipitationmm" or
@@ -56,6 +55,8 @@ def clean_data_types(day_dic):
             else:
                 day_dic[k] = None
     return day_dic
+
+# Takes single file path and returns its Year, month and parsed dates
 
 
 def parse_file(delim, f_name, path):
@@ -89,17 +90,38 @@ def parse_file(delim, f_name, path):
             dates.append(tmp_dic)
     return year, month, dates
 
+#  for handeling excel file in dataset
+
 
 def handle_xlsx(f_name, path):
     wb = xlrd.open_workbook(path+"/"+f_name)
-
     sheet = wb.sheet_by_index(0)
-    for _ in range(sheet.ncols):
-        pass
 
+    year = 0
+    month = 0
+    # dates is list of dictionaries of weather data
+    dates = []
+    cols = sheet.row_values(0)
+    for i in range(1, sheet.nrows):
+        lis = sheet.row_values(i)
+        tmp_year, tmp_month, _ = string_to_date(lis[0])
 
-def printer(year_dic):
-    print(len(year_dic[2012][1][0]))
+        # error check non consistent year or month within same file
+        if tmp_year != year and year != 0:
+            print("error: non consistent file")
+            exit()
+        if tmp_month != month and month != 0:
+            print("error: non consistent file")
+            exit()
+        year, month = tmp_year, tmp_month
+        tmp_dic = {}
+        for i, attr in enumerate(cols):
+            tmp_dic[attr.strip()] = lis[i]
+        tmp_dic = clean_data_types(tmp_dic)
+        dates.append(tmp_dic)
+    return year, month, dates
+
+# Handle user provided arguments
 
 
 def handle_sys_argv(sys_argv):
@@ -119,6 +141,7 @@ def handle_sys_argv(sys_argv):
 
 #  --- Report Functions ---
 
+#  Generates the year report of a given year
 def year_report(year):
     year_data = year_dic[year]
 
@@ -172,6 +195,9 @@ def year_report(year):
                   ))
     print("")
 
+#  Generates the month report of a given month
+
+
 def month_report(year, month):
     month_data = year_dic[year][month]
 
@@ -216,10 +242,13 @@ def month_report(year, month):
 
     print("")
 
+
 class bcolors:
     BLUE = '\033[94m'
     RED = '\033[91m'
     ENDC = '\033[0m'
+
+#  Generates the colored month chart of a given month
 
 
 def month_chart(year, month):
@@ -260,6 +289,7 @@ def month_chart(year, month):
         print(str(high_temps[k])+"C")
     print("")
 
+
 # MAIN
 if __name__ == "__main__":
 
@@ -269,27 +299,30 @@ if __name__ == "__main__":
         for file in zip_ref.namelist():
             if file.startswith('weatherfiles/'):
                 zip_ref.extract(file)
-    # move files to desired directory
-    
+        # move files to desired directory
         filenames = os.listdir("./weatherfiles")
         for f_name in filenames:
-            shutil.move("./weatherfiles/"+f_name,argv_dic["path"]+"/"+f_name)
-        shutil.rmtree("weatherfiles")
+            shutil.move("./weatherfiles/"+f_name, argv_dic["path"]+"/"+f_name)
+        # shutil.rmtree("weatherfiles")
 
     for f_name in filenames:
         if f_name.endswith(".txt"):
             year, month, dates = parse_file(",", f_name, argv_dic["path"])
-            if year in year_dic:
-                year_dic[year][month] = dates
-            else:
-                year_dic[year] = dict()
-                year_dic[year][month] = dates
 
         elif f_name.endswith(".tsv"):
             year, month, dates = parse_file("\t", f_name, argv_dic["path"])
-        elif f_name.endswith(".xlsx"):
-            handle_xlsx(f_name, argv_dic["path"])
 
+        elif f_name.endswith(".xlsx"):
+            year, month, dates = handle_xlsx(f_name, argv_dic["path"])
+
+        # adding month data to year_dic datastructure
+        if year in year_dic:
+            year_dic[year][month] = dates
+        else:
+            year_dic[year] = dict()
+            year_dic[year][month] = dates
+
+    # checking for arguments options
     if "-e" in argv_dic:
         year = int(argv_dic["-e"])
         year_report(year)
