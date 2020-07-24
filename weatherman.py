@@ -18,8 +18,6 @@ def string_to_date(s_date):
     return year, month, day
 
 # assignining relevent data types to the fields
-
-
 def clean_data_types(day_dic):
     for k in day_dic:
         if k == "PKT":
@@ -152,9 +150,7 @@ def year_report(year):
                 if humid < min_humid["humid"]:
                     min_humid["humid"] = humid
                     min_humid["date"] = date
-    # print(max_temp)
-    # print(min_temp)
-    # print(min_humid)
+   
 
     print("-- {} Yearly Report--".format(year))
 
@@ -219,8 +215,50 @@ def month_report(year, month):
           .format(mean_humid["humid"]))
 
 
+class bcolors:
+    BLUE = '\033[94m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    
+
 def month_chart(year, month):
-    pass
+    month_data = year_dic[year][month]
+    
+    high_temps ={}
+    low_temps={}
+
+    g_date=None
+    for day in month_data:
+        date = None
+        if "PKT" in day:
+            date = day["PKT"]
+        elif "PKST" in day:
+            date = day["PKST"]
+        g_date=date
+        temp = day["Max TemperatureC"]
+        if temp is not None:
+            high_temps[date.strftime("%d")] = temp
+
+        temp = day["Min TemperatureC"]
+        if temp is not None:
+            low_temps[date.strftime("%d")] = temp
+
+
+    print("{0} {1}".format(g_date.strftime("%B"),year)) 
+
+    for k in high_temps:
+        # high temp chart
+        print(k,end=" ")
+        for _ in range(high_temps[k]):
+            print(bcolors.RED + "+" + bcolors.ENDC, end="")
+        print("",high_temps[k],"C")
+        # low temp chart
+        print(k,end=" ")
+        for _ in range(low_temps[k]):
+            print(bcolors.BLUE + "+" + bcolors.ENDC, end="")
+        print("",low_temps[k],"C")
+ 
+    
 
 
 # MAIN
@@ -256,3 +294,6 @@ if __name__ == "__main__":
         y_m = argv_dic["-c"]
         year, month = re.split("/", y_m)
         month_chart(int(year), int(month))
+
+
+
