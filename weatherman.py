@@ -2,6 +2,7 @@ import zipfile
 import os
 import re
 import xlrd
+import sys
 
 
 path = "./weatherfiles/"
@@ -55,10 +56,29 @@ def handle_xlsx(f_name):
 def printer(year_dic):
     for k, v in year_dic.items():
         print(k)
+    
+
+def handle_sys_argv(sys_argv):
+    argv_dic={}
+
+    argv_dic["path"] = sys_argv[1]
+
+    if "-e" in sys_argv:
+        argv_dic["-e"] = sys_argv[sys_argv.index("-e")+1]
+    if "-a" in sys_argv:
+        argv_dic["-a"] = sys_argv[sys_argv.index("-a")+1]
+    if "-c" in sys_argv:
+        argv_dic["-c"] = sys_argv[sys_argv.index("-c")+1]
+
+
+    return argv_dic
 
 
 year_dic = {}
 if __name__ == "__main__":
+   
+    argv_dic = handle_sys_argv(sys.argv)
+
     with zipfile.ZipFile("./weatherfiles.zip", 'r') as zip_ref:
         zip_ref.extractall()
     filenames = os.listdir(path)
@@ -78,4 +98,4 @@ if __name__ == "__main__":
             handle_xlsx(f_name)
             # break
 
-    printer(year_dic)
+    # printer(year_dic)
