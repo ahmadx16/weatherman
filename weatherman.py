@@ -201,8 +201,8 @@ def year_report(year):
 def month_report(year, month):
     month_data = year_dic[year][month]
 
-    max_temp = {"temp": -273, "date": None}
-    min_temp = {"temp": 1000, "date": None}
+    max_temp = {"temp": 0, "date": None}
+    min_temp = {"temp": 0, "date": None}
     mean_humid = {"humid": 0, "date": None}
 
     for day in month_data:
@@ -212,23 +212,24 @@ def month_report(year, month):
         elif "PKST" in day:
             date = day["PKST"]
 
-        temp = day["Mean TemperatureC"]
+        temp = day["Max TemperatureC"]
         if temp is not None:
-            if temp > max_temp["temp"]:
-                max_temp["temp"] = temp
-                max_temp["date"] = date
-
+            max_temp["temp"] += temp
+            max_temp["date"] = date
+        temp = day["Min TemperatureC"]
         if temp is not None:
-            if temp < min_temp["temp"]:
-                min_temp["temp"] = temp
-                min_temp["date"] = date
+            min_temp["temp"] += temp
+            min_temp["date"] = date
 
         humid = day["Min Humidity"]
         if humid is not None:
             mean_humid["humid"] += humid
             mean_humid["date"] = date
 
-        mean_humid["humid"] = mean_humid["humid"]/len(month_data)
+    mean_humid["humid"] = mean_humid["humid"]/len(month_data)
+    max_temp["temp"] =  max_temp["temp"]/len(month_data)
+    min_temp["temp"] =  min_temp["temp"]/len(month_data)
+
 
     print("--  Month {} Report--".format(month))
 
