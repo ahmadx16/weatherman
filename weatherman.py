@@ -247,16 +247,18 @@ def month_chart(year, month):
     print("{0} {1}".format(g_date.strftime("%B"),year)) 
 
     for k in high_temps:
-        # high temp chart
-        print(k,end=" ")
-        for _ in range(high_temps[k]):
-            print(bcolors.RED + "+" + bcolors.ENDC, end="")
-        print("",high_temps[k],"C")
         # low temp chart
         print(k,end=" ")
         for _ in range(low_temps[k]):
             print(bcolors.BLUE + "+" + bcolors.ENDC, end="")
-        print("",low_temps[k],"C")
+        
+        # high temp chart
+        for _ in range(high_temps[k]):
+            print(bcolors.RED + "+" + bcolors.ENDC, end="")
+
+        print("",str(low_temps[k])+"C - ",end="")
+        print(str(high_temps[k])+"C")
+        
  
     
 
