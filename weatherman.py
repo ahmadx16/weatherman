@@ -18,14 +18,16 @@ def string_to_date(s_date):
     return year, month, day
 
 # assignining relevent data types to the fields
+
+
 def clean_data_types(day_dic):
     for k in day_dic:
         if k == "PKT":
             year, month, day = string_to_date(day_dic[k])
             date = dt.datetime(year, month, day)
             day_dic[k] = date
-        
-        elif k=="PKST":
+
+        elif k == "PKST":
             year, month, day = string_to_date(day_dic[k])
             date = dt.datetime(year, month, day)
             # this is to ensure consistency in our datastructure
@@ -34,14 +36,14 @@ def clean_data_types(day_dic):
         elif k == "Events":
             # events are already strings
             event = day_dic[k]
-            if event =='':
-                day_dic[k] = None 
+            if event == '':
+                day_dic[k] = None
             pass
         # floats
         elif (k == "Mean VisibilityKm" or k == "Max VisibilityKm" or
                 k == "Min VisibilitykM" or k == "Precipitationmm" or
                 k == "Mean Sea Level PressurehPa"):
-                
+
             val = day_dic[k]
             if val != '':
                 day_dic[k] = float(val)
@@ -54,8 +56,7 @@ def clean_data_types(day_dic):
                 day_dic[k] = int(val)
             else:
                 day_dic[k] = None
-    print(day_dic)
-    return day_dic           
+    return day_dic
 
 
 def parse_file(delim, f_name):
@@ -117,39 +118,112 @@ def handle_sys_argv(sys_argv):
     return argv_dic
 
 
+#  --- Report Functions ---
+
 def year_report(year):
     year_data = year_dic[year]
 
-    max_temp = -273
-    min_temp = 1000
-    min_humid = 100
+    max_temp = {"temp": -273, "date": None}
+    min_temp = {"temp": 1000, "date": None}
+    min_humid = {"humid": 100, "date": None}
+
     for k, month in year_data.items():
         for day in month:
+            date = None
+            if "PKT" in day:
+                date = day["PKT"]
+            elif "PKST" in day:
+                date = day["PKST"]
+
             temp = day["Max TemperatureC"]
-            if temp is not  None:
-                if temp > max_temp:
-                    max_temp = temp
+            if temp is not None:
+                if temp > max_temp["temp"]:
+                    max_temp["temp"] = temp
+                    max_temp["date"] = date
+
             temp = day["Min TemperatureC"]
-            if temp is not  None:
-                if temp < min_temp:
-                    min_temp = temp
+            if temp is not None:
+                if temp < min_temp["temp"]:
+                    min_temp["temp"] = temp
+                    min_temp["date"] = date
+
             humid = day["Min Humidity"]
-            if humid is not  None:
-                if humid < min_humid:
-                    min_humid = humid
-    print(max_temp)
-    print(min_temp)
-    print(min_humid)
+            if humid is not None:
+                if humid < min_humid["humid"]:
+                    min_humid["humid"] = humid
+                    min_humid["date"] = date
+    # print(max_temp)
+    # print(min_temp)
+    # print(min_humid)
+
+    print("-- {} Yearly Report--".format(year))
+
+    print("Highest: {0}C on {1} {2}"
+          .format(max_temp["temp"],
+                  max_temp["date"].strftime("%B"),
+                  max_temp["date"].strftime("%d")
+                  ))
+
+    print("Lowest: {0}C on {1} {2}"
+          .format(min_temp["temp"],
+                  min_temp["date"].strftime("%B"),
+                  min_temp["date"].strftime("%d")
+                  ))
+    print("Humidity: {0}% on {1} {2}"
+          .format(min_humid["humid"],
+                  min_humid["date"].strftime("%B"),
+                  min_humid["date"].strftime("%d")
+                  ))
 
 
 def month_report(year, month):
-    pass
+    month_data = year_dic[year][month]
+    
+    max_temp = {"temp": -273, "date": None}
+    min_temp = {"temp": 1000, "date": None}
+    mean_humid = {"humid": 0, "date": None}
+    
+    for day in month_data:
+        date = None
+        if "PKT" in day:
+            date = day["PKT"]
+        elif "PKST" in day:
+            date = day["PKST"]
+
+        temp = day["Mean TemperatureC"]
+        if temp is not None:
+            if temp > max_temp["temp"]:
+                max_temp["temp"] = temp
+                max_temp["date"] = date
+
+        if temp is not None:
+            if temp < min_temp["temp"]:
+                min_temp["temp"] = temp
+                min_temp["date"] = date
+
+        humid = day["Min Humidity"]
+        if humid is not None:
+            mean_humid["humid"] += humid
+            mean_humid["date"] = date
+
+        mean_humid["humid"] = mean_humid["humid"]/len(month_data)
+
+    print("--  Month {} Report--".format(month))
+
+    print("Highest Average: {0}C "
+          .format(max_temp["temp"] ))
+
+    print("Lowest Average: {0}C"
+          .format(min_temp["temp"]))
+    print("Average Mean Humidity: {0}% "
+          .format(mean_humid["humid"]))
 
 
 def month_chart(year, month):
     pass
 
 
+# MAIN
 if __name__ == "__main__":
 
     argv_dic = handle_sys_argv(sys.argv)
@@ -170,7 +244,6 @@ if __name__ == "__main__":
             year, month, dates = parse_file("\t", f_name)
         elif f_name.endswith(".xlsx"):
             handle_xlsx(f_name)
-            # break
 
     if "-e" in argv_dic:
         year = int(argv_dic["-e"])
