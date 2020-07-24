@@ -3,6 +3,7 @@ import os
 import re
 import xlrd
 import sys
+import datetime as dt
 
 
 path = "./weatherfiles/"
@@ -15,6 +16,46 @@ def string_to_date(s_date):
     year, month, day = re.split("-", s_date)
     year, month, day = int(year), int(month), int(day)
     return year, month, day
+
+# assignining relevent data types to the fields
+def clean_data_types(day_dic):
+    for k in day_dic:
+        if k == "PKT":
+            year, month, day = string_to_date(day_dic[k])
+            date = dt.datetime(year, month, day)
+            day_dic[k] = date
+        
+        elif k=="PKST":
+            year, month, day = string_to_date(day_dic[k])
+            date = dt.datetime(year, month, day)
+            # this is to ensure consistency in our datastructure
+            day_dic[k] = date
+
+        elif k == "Events":
+            # events are already strings
+            event = day_dic[k]
+            if event =='':
+                day_dic[k] = None 
+            pass
+        # floats
+        elif (k == "Mean VisibilityKm" or k == "Max VisibilityKm" or
+                k == "Min VisibilitykM" or k == "Precipitationmm" or
+                k == "Mean Sea Level PressurehPa"):
+                
+            val = day_dic[k]
+            if val != '':
+                day_dic[k] = float(val)
+            else:
+                day_dic[k] = None
+
+        else:
+            val = day_dic[k]
+            if val != '':
+                day_dic[k] = int(val)
+            else:
+                day_dic[k] = None
+    print(day_dic)
+    return day_dic           
 
 
 def parse_file(delim, f_name):
@@ -44,6 +85,7 @@ def parse_file(delim, f_name):
             tmp_dic = {}
             for i, attr in enumerate(cols):
                 tmp_dic[attr.strip()] = lis[i]
+            tmp_dic = clean_data_types(tmp_dic)
             dates.append(tmp_dic)
     return year, month, dates
 
@@ -84,18 +126,15 @@ def year_report(year):
     for k, month in year_data.items():
         for day in month:
             temp = day["Max TemperatureC"]
-            if temp != '':
-                temp = int(temp)
+            if temp is not  None:
                 if temp > max_temp:
                     max_temp = temp
             temp = day["Min TemperatureC"]
-            if temp != '':
-                temp = int(temp)
+            if temp is not  None:
                 if temp < min_temp:
                     min_temp = temp
             humid = day["Min Humidity"]
-            if humid != '':
-                humid = int(humid)
+            if humid is not  None:
                 if humid < min_humid:
                     min_humid = humid
     print(max_temp)
