@@ -4,9 +4,8 @@ import re
 import xlrd
 import sys
 import datetime as dt
+import shutil
 
-
-path = "./weatherfiles/"
 
 # main data structure
 year_dic = {}
@@ -18,6 +17,8 @@ def string_to_date(s_date):
     return year, month, day
 
 # assignining relevent data types to the fields
+
+
 def clean_data_types(day_dic):
     for k in day_dic:
         if k == "PKT":
@@ -57,13 +58,13 @@ def clean_data_types(day_dic):
     return day_dic
 
 
-def parse_file(delim, f_name):
+def parse_file(delim, f_name, path):
     cols = []
     year = 0
     month = 0
     # dates is list of dictionaries of weather data
     dates = []
-    file_data = open(path+f_name, 'r', errors='ignore').readlines()
+    file_data = open(path+"/"+f_name, 'r', errors='ignore').readlines()
     for i, line in enumerate(file_data):
         line = line.replace("\n", "")
         if i == 0:
@@ -89,8 +90,8 @@ def parse_file(delim, f_name):
     return year, month, dates
 
 
-def handle_xlsx(f_name):
-    wb = xlrd.open_workbook(path+f_name)
+def handle_xlsx(f_name, path):
+    wb = xlrd.open_workbook(path+"/"+f_name)
 
     sheet = wb.sheet_by_index(0)
     for _ in range(sheet.ncols):
@@ -150,7 +151,6 @@ def year_report(year):
                 if humid < min_humid["humid"]:
                     min_humid["humid"] = humid
                     min_humid["date"] = date
-   
 
     print("-- {} Yearly Report--".format(year))
 
@@ -170,15 +170,15 @@ def year_report(year):
                   min_humid["date"].strftime("%B"),
                   min_humid["date"].strftime("%d")
                   ))
-
+    print("")
 
 def month_report(year, month):
     month_data = year_dic[year][month]
-    
+
     max_temp = {"temp": -273, "date": None}
     min_temp = {"temp": 1000, "date": None}
     mean_humid = {"humid": 0, "date": None}
-    
+
     for day in month_data:
         date = None
         if "PKT" in day:
@@ -207,34 +207,35 @@ def month_report(year, month):
     print("--  Month {} Report--".format(month))
 
     print("Highest Average: {0}C "
-          .format(max_temp["temp"] ))
+          .format(max_temp["temp"]))
 
     print("Lowest Average: {0}C"
           .format(min_temp["temp"]))
     print("Average Mean Humidity: {0}% "
           .format(mean_humid["humid"]))
 
+    print("")
 
 class bcolors:
     BLUE = '\033[94m'
     RED = '\033[91m'
     ENDC = '\033[0m'
-    
+
 
 def month_chart(year, month):
     month_data = year_dic[year][month]
-    
-    high_temps ={}
-    low_temps={}
 
-    g_date=None
+    high_temps = {}
+    low_temps = {}
+
+    g_date = None
     for day in month_data:
         date = None
         if "PKT" in day:
             date = day["PKT"]
         elif "PKST" in day:
             date = day["PKST"]
-        g_date=date
+        g_date = date
         temp = day["Max TemperatureC"]
         if temp is not None:
             high_temps[date.strftime("%d")] = temp
@@ -243,25 +244,21 @@ def month_chart(year, month):
         if temp is not None:
             low_temps[date.strftime("%d")] = temp
 
-
-    print("{0} {1}".format(g_date.strftime("%B"),year)) 
+    print("{0} {1}".format(g_date.strftime("%B"), year))
 
     for k in high_temps:
         # low temp chart
-        print(k,end=" ")
+        print(k, end=" ")
         for _ in range(low_temps[k]):
             print(bcolors.BLUE + "+" + bcolors.ENDC, end="")
-        
+
         # high temp chart
         for _ in range(high_temps[k]):
             print(bcolors.RED + "+" + bcolors.ENDC, end="")
 
-        print("",str(low_temps[k])+"C - ",end="")
+        print("", str(low_temps[k])+"C - ", end="")
         print(str(high_temps[k])+"C")
-        
- 
-    
-
+    print("")
 
 # MAIN
 if __name__ == "__main__":
@@ -269,11 +266,19 @@ if __name__ == "__main__":
     argv_dic = handle_sys_argv(sys.argv)
 
     with zipfile.ZipFile("./weatherfiles.zip", 'r') as zip_ref:
-        zip_ref.extractall()
-    filenames = os.listdir(path)
+        for file in zip_ref.namelist():
+            if file.startswith('weatherfiles/'):
+                zip_ref.extract(file)
+    # move files to desired directory
+    
+        filenames = os.listdir("./weatherfiles")
+        for f_name in filenames:
+            shutil.move("./weatherfiles/"+f_name,argv_dic["path"]+"/"+f_name)
+        shutil.rmtree("weatherfiles")
+
     for f_name in filenames:
         if f_name.endswith(".txt"):
-            year, month, dates = parse_file(",", f_name)
+            year, month, dates = parse_file(",", f_name, argv_dic["path"])
             if year in year_dic:
                 year_dic[year][month] = dates
             else:
@@ -281,9 +286,9 @@ if __name__ == "__main__":
                 year_dic[year][month] = dates
 
         elif f_name.endswith(".tsv"):
-            year, month, dates = parse_file("\t", f_name)
+            year, month, dates = parse_file("\t", f_name, argv_dic["path"])
         elif f_name.endswith(".xlsx"):
-            handle_xlsx(f_name)
+            handle_xlsx(f_name, argv_dic["path"])
 
     if "-e" in argv_dic:
         year = int(argv_dic["-e"])
@@ -296,6 +301,3 @@ if __name__ == "__main__":
         y_m = argv_dic["-c"]
         year, month = re.split("/", y_m)
         month_chart(int(year), int(month))
-
-
-
