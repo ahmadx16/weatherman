@@ -1,13 +1,12 @@
 import os
 import sys
-import shutil
-import re
-import statistics
 import csv
 import datetime as dt
 import zipfile
 
 import xlrd
+
+import calculations
 
 
 # globals
@@ -197,41 +196,14 @@ def year_report(year):
         year (int): This year's report is printed
     """
 
-    year_data = weather_dataset[year]
+    max_temp, max_temp_date = calculations.calculate(
+        weather_dataset, "Max TemperatureC", "max", year)
 
-    # Genrate list with only required column values of weather
-    temp_humid_data = [(day_data[list(day_data.keys())[0]],
-                        day_data["Max TemperatureC"],
-                        day_data["Min TemperatureC"],
-                        day_data["Min Humidity"])
-                       for month_data in year_data.values()
-                       for day_data in month_data]
+    min_temp, min_temp_date = calculations.calculate(
+        weather_dataset, "Min TemperatureC", "min", year)
 
-    # Getting desired index and values, and filtering out None values
-    max_temp_values = [(values[1], values[0]) for values in temp_humid_data
-                       if values[1] is not None]
-    max_temp_index = max(range(len(max_temp_values)),
-                         key=max_temp_values.__getitem__)
-
-    min_temp_values = [(values[2], values[0]) for values in temp_humid_data
-                       if values[2] is not None]
-    min_temp_index = min(range(len(min_temp_values)),
-                         key=min_temp_values.__getitem__)
-
-    min_humid_values = [(values[3], values[0]) for values in temp_humid_data
-                        if values[3] is not None]
-    min_humid_index = min(range(len(min_humid_values)),
-                          key=min_humid_values.__getitem__)
-
-    # Assigning values for convenience use in report below
-    max_temp = max_temp_values[max_temp_index][0]
-    max_temp_date = max_temp_values[max_temp_index][1]
-
-    min_temp = min_temp_values[min_temp_index][0]
-    min_temp_date = min_temp_values[min_temp_index][1]
-
-    min_humid = min_humid_values[min_humid_index][0]
-    min_humid_date = min_humid_values[min_humid_index][1]
+    min_humid, min_humid_date = calculations.calculate(
+        weather_dataset, "Min Humidity", "min", year)
 
     print("-- Year {} Report --".format(year))
     print("Highest: {0}C on {1} {2}"
@@ -258,28 +230,16 @@ def month_report(year, month):
        Temperature' and Averege Mean Humidity of a given month.
     """
 
-    month_data = weather_dataset[year][month]
+    avg_max_temp, month_date = calculations.calculate(
+        weather_dataset, "Max TemperatureC", "mean", year, month)
 
-    day_keys = list(month_data[0].keys())
-    # first key is datetime object
-    month_name = month_data[0][day_keys[0]].strftime("%B")
+    avg_min_temp, month_date = calculations.calculate(
+        weather_dataset, "Min TemperatureC", "mean", year, month)
 
-    # Genrate list with only required column values
-    temp_humid_data = [(day_data[list(day_data.keys())[0]],
-                        day_data["Max TemperatureC"],
-                        day_data["Min TemperatureC"],
-                        day_data["Mean Humidity"])
-                       for day_data in month_data]
+    avg_mean_humid, month_date = calculations.calculate(
+        weather_dataset, "Mean Humidity", "mean", year, month)
 
-    avg_max_temp = statistics.mean([day_data[1]
-                                    for day_data in temp_humid_data
-                                    if day_data[1] is not None])
-    avg_min_temp = statistics.mean([day_data[2]
-                                    for day_data in temp_humid_data
-                                    if day_data[2] is not None])
-    avg_mean_humid = statistics.mean([day_data[3]
-                                      for day_data in temp_humid_data
-                                      if day_data[3] is not None])
+    month_name = month_date.strftime("%B")
 
     print("-- {} {} Report --".format(month_name, year))
     print("Average Highest: {:.0f}C ".format(round(avg_max_temp, 1)))
@@ -300,22 +260,18 @@ def month_chart(year, month):
     """Prints color charts on console of a given month
     """
 
-    month_data = weather_dataset[year][month]
-    day_keys = list(month_data[0].keys())
-    # first key is datetime object
-    month_name = month_data[0][day_keys[0]].strftime("%B")
+    high_temps = calculations.get_attr_values(
+        weather_dataset, "Max TemperatureC",  year, month)
+
+    low_temps = calculations.get_attr_values(
+        weather_dataset, "Min TemperatureC", year, month)
+    
+    month_name = high_temps[0][1].strftime("%B")
 
     # Saving max temperature and min temperature in dictionaries
     # key is datetime object
-    max_temp_col = "Max TemperatureC"
-    high_temps = {day_data[day_keys[0]]: day_data[max_temp_col]
-                  for day_data in month_data
-                  if day_data[max_temp_col] is not None}
-
-    min_temp_col = "Min TemperatureC"
-    low_temps = {day_data[day_keys[0]]: day_data[min_temp_col]
-                 for day_data in month_data
-                 if day_data[min_temp_col] is not None}
+    high_temps = {attr[1]: attr[0] for attr in high_temps}
+    low_temps = {attr[1]: attr[0] for attr in low_temps}
 
     # prints colored chart
     print("{0} {1}".format(month_name, year))
