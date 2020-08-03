@@ -1,7 +1,8 @@
-from report_calculator import calculate, get_attr_values, get_max_temp,\
+from report_calculator import get_attr_values, get_max_temp,\
     get_min_temp, get_mean_temp
-    
-def year_report(year):
+
+
+def year_report(weather_dataset, year):
     """Prints Report of a given year
 
     The report prints Max Temperature,Min Temperature and
@@ -38,21 +39,21 @@ def year_report(year):
                   ))
 
 
-def month_report(year, month):
+def month_report(weather_dataset, year, month):
     """Prints Report of a given month and year
 
        It prints 'Highest Average temperature', 'Lowest Average
        Temperature' and Averege Mean Humidity of a given month.
     """
 
-    avg_max_temp, month_date = calculate(
-        weather_dataset, "Max TemperatureC", "mean", year, month)
+    avg_max_temp, month_date = get_mean_temp(
+        weather_dataset, "Max TemperatureC", year, month)
 
-    avg_min_temp, month_date = calculate(
-        weather_dataset, "Min TemperatureC", "mean", year, month)
+    avg_min_temp, month_date = get_mean_temp(
+        weather_dataset, "Min TemperatureC", year, month)
 
-    avg_mean_humid, month_date = calculate(
-        weather_dataset, "Mean Humidity", "mean", year, month)
+    avg_mean_humid, month_date = get_mean_temp(
+        weather_dataset, "Mean Humidity", year, month)
 
     month_name = month_date.strftime("%B")
 
@@ -71,7 +72,7 @@ class Colors:
     ENDC = '\033[0m'
 
 
-def month_chart(year, month):
+def month_chart(weather_dataset, year, month):
     """Prints color charts on console of a given month
     """
 
