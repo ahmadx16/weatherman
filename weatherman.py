@@ -6,7 +6,8 @@ import zipfile
 
 import xlrd
 
-import calculations
+from report_calculator import calculate, get_attr_values, get_max_temp,\
+    get_min_temp, get_mean_temp
 
 
 # globals
@@ -196,14 +197,14 @@ def year_report(year):
         year (int): This year's report is printed
     """
 
-    max_temp, max_temp_date = calculations.calculate(
-        weather_dataset, "Max TemperatureC", "max", year)
+    max_temp, max_temp_date = get_max_temp(
+        weather_dataset, "Max TemperatureC", year)
 
-    min_temp, min_temp_date = calculations.calculate(
-        weather_dataset, "Min TemperatureC", "min", year)
+    min_temp, min_temp_date = get_min_temp(
+        weather_dataset, "Min TemperatureC", year)
 
-    min_humid, min_humid_date = calculations.calculate(
-        weather_dataset, "Min Humidity", "min", year)
+    min_humid, min_humid_date = get_min_temp(
+        weather_dataset, "Min Humidity", year)
 
     print("-- Year {} Report --".format(year))
     print("Highest: {0}C on {1} {2}"
@@ -230,13 +231,13 @@ def month_report(year, month):
        Temperature' and Averege Mean Humidity of a given month.
     """
 
-    avg_max_temp, month_date = calculations.calculate(
+    avg_max_temp, month_date = calculate(
         weather_dataset, "Max TemperatureC", "mean", year, month)
 
-    avg_min_temp, month_date = calculations.calculate(
+    avg_min_temp, month_date = calculate(
         weather_dataset, "Min TemperatureC", "mean", year, month)
 
-    avg_mean_humid, month_date = calculations.calculate(
+    avg_mean_humid, month_date = calculate(
         weather_dataset, "Mean Humidity", "mean", year, month)
 
     month_name = month_date.strftime("%B")
@@ -260,12 +261,12 @@ def month_chart(year, month):
     """Prints color charts on console of a given month
     """
 
-    high_temps = calculations.get_attr_values(
+    high_temps = get_attr_values(
         weather_dataset, "Max TemperatureC",  year, month)
 
-    low_temps = calculations.get_attr_values(
+    low_temps = get_attr_values(
         weather_dataset, "Min TemperatureC", year, month)
-    
+
     month_name = high_temps[0][1].strftime("%B")
 
     # Saving max temperature and min temperature in dictionaries
