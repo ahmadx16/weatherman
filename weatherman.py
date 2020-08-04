@@ -27,8 +27,13 @@ def handle_sys_argv():
     parser.add_argument(
         '-c', nargs='?', type=check_month_year,
         help="enter year/month to get monthly chart")
-
     args = parser.parse_args()
+
+    if args.e == args.a == args.c == None:
+        print("No arguments given")
+        print_correct_format()
+        exit()
+
     return args
 
 
@@ -164,3 +169,4 @@ if __name__ == "__main__":
 
     report_generator(args)
     # delete_files()
+    

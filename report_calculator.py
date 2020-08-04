@@ -2,17 +2,7 @@ import statistics
 
 
 def get_attr_values(weather_dataset, attr, year, month=-1):
-    """Returns readings of a given attribute on given year/month
-
-    Args:
-        weather_dataset (dict): The main dataset
-        attr (string): Name of attribute which needs to be extracted
-        year (int): Year whose readings is required
-        month (int, optional): Month on which calculation is required.
-            Skip to get complete years data. Defaults to -1.
-
-    Returns:
-        list(tupple): [(attribute, datetime)] 
+    """Returns readings of a given attribute on given year/month 
     """
 
     attr_values = []

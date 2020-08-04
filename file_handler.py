@@ -1,9 +1,10 @@
 import os
+import shutil
 import zipfile
 import csv
-import xlrd
 import datetime as dt
 
+import xlrd
 
 def is_file_relevent(args, file_name):
     """ Checks weather filename is relevent to query
@@ -24,7 +25,8 @@ def is_file_relevent(args, file_name):
                 # Abbreviated month name.
                 if args.c.strftime("%b") in file_name:
                     return True
-
+    
+    return False
 
 def extract_files(args, path):
     """Takes path to zip file, and extracts is on current dir. 
@@ -36,6 +38,10 @@ def extract_files(args, path):
         list of str: List of filenames
     """
 
+    if "weatherfiles" in os.listdir():
+        shutil.rmtree("weatherfiles")
+
+    os.mkdir("weatherfiles")
     try:
         with zipfile.ZipFile(os.path.join(path, "weatherfiles.zip"), 'r')\
                 as zip_ref:
