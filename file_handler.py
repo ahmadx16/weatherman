@@ -7,6 +7,26 @@ import datetime as dt
 import xlrd
 
 
+# attributes that are relevent to calculations
+REQUIRED_ATTRIBUTES = (
+    "PKT",
+    "PKST",
+    "Max TemperatureC",
+    "Min TemperatureC",
+    "Min Humidity",
+    "Mean Humidity",
+)
+
+
+def filter_attributes(day_data):
+    """ Discards non relevent attributes from datastructure
+    """
+
+    for key in list(day_data.keys()):
+        if key not in REQUIRED_ATTRIBUTES:
+            del day_data[key]
+
+
 def is_file_relevent(args, file_name):
     """ Checks filename is relevent to user query
     """
@@ -113,6 +133,7 @@ def handle_csv(path, file_name, delim):
 
         for row in csvreader:
             day_data = {cols[i].strip(): attr for i, attr in enumerate(row)}
+            filter_attributes(day_data)
             clean_data_types(day_data)
             month_data.append(day_data)
 
@@ -151,6 +172,7 @@ def handle_xlsx(path, file_name):
         day_data = {cols[i].strip(): attr
                     for i, attr in enumerate(day_row)
                     if attr is not None}
+        filter_attributes(day_data)
         clean_data_types(day_data)
         month_data.append(day_data)
     return (year, month, month_data)

@@ -26,7 +26,7 @@ def get_attr_values(weather_dataset, attr, year, month=-1):
 def get_max_attr(weather_dataset, attr, year, month=-1):
     """Calculates max on given attribute 
     """
-
+    # get required attributes values
     attr_values = get_attr_values(weather_dataset, attr, year, month)
     max_index = max(range(len(attr_values)),
                     key=attr_values.__getitem__)
@@ -37,7 +37,7 @@ def get_max_attr(weather_dataset, attr, year, month=-1):
 
 
 def get_min_attr(weather_dataset, attr, year, month=-1):
-    """calculates the minimum temperature on provided year and month
+    """calculates the minimum on provided year and month
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
@@ -50,7 +50,7 @@ def get_min_attr(weather_dataset, attr, year, month=-1):
 
 
 def get_mean_attr(weather_dataset, attr, year, month=-1):
-    """calculates the mean temperature on provided year and month
+    """calculates the mean on provided year and month
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)

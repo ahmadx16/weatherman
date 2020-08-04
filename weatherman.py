@@ -42,6 +42,9 @@ def handle_sys_argv():
 
 
 def check_dir_path(path):
+    """ path check for argparse
+    """
+
     if os.path.isdir(path):
         return path
     else:
@@ -50,6 +53,9 @@ def check_dir_path(path):
 
 
 def check_month_year(date):
+    """ date check for argparse
+    """
+
     try:
         date = dt.datetime.strptime(date, "%Y/%m")
         return date
@@ -60,6 +66,9 @@ def check_month_year(date):
 
 
 def check_year(date):
+    """ year check for argparse
+    """
+
     try:
         date = dt.datetime.strptime(date, "%Y")
         return date
@@ -115,7 +124,7 @@ def get_month_data(files_path, file_name):
         return (year, month, month_data)
 
 
-def report_generator(args):
+def generate_reports(args):
     """ Generates the yearly, monthly reports and charts
     """
 
@@ -127,6 +136,7 @@ def report_generator(args):
         else:
             print("The -e flag is given a year that does " +
                   "not exist in data set")
+            print_correct_format()
     if args.a:
         year, month = args.a.strftime("%Y %m").split()
         year, month = int(year), int(month)
@@ -135,6 +145,7 @@ def report_generator(args):
         else:
             print("The -a flag is given a year/month that does " +
                   "not exist in data set")
+            print_correct_format()
     if args.c:
         year, month = args.c.strftime("%Y %m").split()
         year, month = int(year), int(month)
@@ -143,11 +154,13 @@ def report_generator(args):
         else:
             print("The -c flag is given a year/month that does " +
                   "not exist in data set")
+            print_correct_format()
 
 
 def add_to_dataset(year, month, month_data):
     """ adds month data to main dataset
     """
+
     if year in weather_dataset:
         weather_dataset[year][month] = month_data
     else:
@@ -168,5 +181,5 @@ if __name__ == "__main__":
             year, month, month_data = data
             add_to_dataset(year, month, month_data)
 
-    report_generator(args)
-    # delete_files()
+    generate_reports(args)
+    delete_files()
