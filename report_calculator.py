@@ -23,8 +23,8 @@ def get_attr_values(weather_dataset, attr, year, month=-1):
     return attr_values
 
 
-def get_max_temp(weather_dataset, attr, year, month=-1):
-    """Calculates the given calculation on provided year and month
+def get_max_attr(weather_dataset, attr, year, month=-1):
+    """Calculates max on given attribute 
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
@@ -36,7 +36,7 @@ def get_max_temp(weather_dataset, attr, year, month=-1):
     return (max_value, max_value_date)
 
 
-def get_min_temp(weather_dataset, attr, year, month=-1):
+def get_min_attr(weather_dataset, attr, year, month=-1):
     """calculates the minimum temperature on provided year and month
     """
 
@@ -49,7 +49,7 @@ def get_min_temp(weather_dataset, attr, year, month=-1):
     return (min_value, min_value_date)
 
 
-def get_mean_temp(weather_dataset, attr, year, month=-1):
+def get_mean_attr(weather_dataset, attr, year, month=-1):
     """calculates the mean temperature on provided year and month
     """
 

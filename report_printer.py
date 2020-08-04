@@ -1,5 +1,5 @@
-from report_calculator import get_attr_values, get_max_temp,\
-    get_min_temp, get_mean_temp
+from report_calculator import get_attr_values, get_max_attr,\
+    get_min_attr, get_mean_attr
 
 
 def year_report(weather_dataset, year):
@@ -7,18 +7,15 @@ def year_report(weather_dataset, year):
 
     The report prints Max Temperature,Min Temperature and
     Min Humidity of a given year.
-
-    Args:
-        year (int): This year's report is printed
     """
 
-    max_temp, max_temp_date = get_max_temp(
+    max_temp, max_temp_date = get_max_attr(
         weather_dataset, "Max TemperatureC", year)
 
-    min_temp, min_temp_date = get_min_temp(
+    min_temp, min_temp_date = get_min_attr(
         weather_dataset, "Min TemperatureC", year)
 
-    min_humid, min_humid_date = get_min_temp(
+    min_humid, min_humid_date = get_min_attr(
         weather_dataset, "Min Humidity", year)
 
     print("-- Year {} Report --".format(year))
@@ -46,13 +43,13 @@ def month_report(weather_dataset, year, month):
        Temperature' and Averege Mean Humidity of a given month.
     """
 
-    avg_max_temp, month_date = get_mean_temp(
+    avg_max_temp, month_date = get_mean_attr(
         weather_dataset, "Max TemperatureC", year, month)
 
-    avg_min_temp, month_date = get_mean_temp(
+    avg_min_temp, month_date = get_mean_attr(
         weather_dataset, "Min TemperatureC", year, month)
 
-    avg_mean_humid, month_date = get_mean_temp(
+    avg_mean_humid, month_date = get_mean_attr(
         weather_dataset, "Mean Humidity", year, month)
 
     month_name = month_date.strftime("%B")

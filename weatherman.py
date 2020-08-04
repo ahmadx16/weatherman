@@ -5,8 +5,9 @@ import argparse
 import datetime as dt
 
 
-from reports import year_report, month_report, month_chart
+from report_printer import year_report, month_report, month_chart
 from file_handler import extract_files, handle_csv, handle_xlsx
+from file_handler import delete_files
 
 # globals
 # main data structure to store weather dataset
@@ -14,9 +15,12 @@ weather_dataset = {}
 
 
 def handle_sys_argv():
+    """Validates and parses sys arguments
+    """
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'path', type=dir_path,
+        'path', type=check_dir_path,
         help="path to folder containing weatherfiles.zip")
     parser.add_argument(
         '-e', nargs='?', type=check_year,
@@ -37,7 +41,7 @@ def handle_sys_argv():
     return args
 
 
-def dir_path(path):
+def check_dir_path(path):
     if os.path.isdir(path):
         return path
     else:
@@ -81,13 +85,6 @@ def print_correct_format():
 
 def date_exists(year, month=-1):
     """Returns True if given month/year exists in weather dataset
-
-    Args:
-        month (int, optional)
-        year (int)
-
-    Returns:
-        [Boolean]
     """
 
     if year in weather_dataset:
@@ -102,6 +99,8 @@ def date_exists(year, month=-1):
 
 
 def get_month_data(files_path, file_name):
+    """ Return month data of a given file name
+    """
 
     if file_name.endswith(".txt"):
         year, month, month_data = handle_csv(files_path, file_name, ",")
@@ -116,11 +115,11 @@ def get_month_data(files_path, file_name):
         return (year, month, month_data)
 
 
-def delete_files():
-    shutil.rmtree("weatherfiles")
-
 def report_generator(args):
-    # checking for arguments options
+    """ Generates the yearly, monthly reports and charts
+    """
+
+    # generates report based on arguments given
     if args.e:
         year = int(args.e.strftime("%Y"))
         if date_exists(year):
@@ -147,6 +146,8 @@ def report_generator(args):
 
 
 def add_to_dataset(year, month, month_data):
+    """ adds month data to main dataset
+    """
     if year in weather_dataset:
         weather_dataset[year][month] = month_data
     else:
@@ -169,4 +170,3 @@ if __name__ == "__main__":
 
     report_generator(args)
     # delete_files()
-    

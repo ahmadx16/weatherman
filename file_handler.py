@@ -6,10 +6,11 @@ import datetime as dt
 
 import xlrd
 
+
 def is_file_relevent(args, file_name):
-    """ Checks weather filename is relevent to query
+    """ Checks filename is relevent to user query
     """
-    
+
     if file_name.startswith('weatherfiles/'):
         # return True # debugline
         if args.e:
@@ -25,27 +26,28 @@ def is_file_relevent(args, file_name):
                 # Abbreviated month name.
                 if args.c.strftime("%b") in file_name:
                     return True
-    
+
     return False
 
-def extract_files(args, path):
-    """Takes path to zip file, and extracts is on current dir. 
 
-    Args:
-        path (string): path to zip file 
+def extract_files(args, path):
+    """Extracts only relevent to query files on current directory 
 
     Returns:
-        list of str: List of filenames
+        list of str: List of relevent filenames
     """
 
+    # delete folder if it already exists
     if "weatherfiles" in os.listdir():
         shutil.rmtree("weatherfiles")
 
     os.mkdir("weatherfiles")
+
     try:
         with zipfile.ZipFile(os.path.join(path, "weatherfiles.zip"), 'r')\
                 as zip_ref:
             for file_name in zip_ref.namelist():
+                # check and extract only relevent files
                 if is_file_relevent(args, file_name):
                     zip_ref.extract(file_name)
 
@@ -164,3 +166,10 @@ def string_to_date(date_string):
         print("Invalid format of date found in dataset")
     else:
         return date
+
+
+def delete_files():
+    """deletes extracted files and folder
+    """
+
+    shutil.rmtree("weatherfiles")
