@@ -35,16 +35,6 @@ def get_attr_values(weather_dataset, attr, year, month=-1):
 
 def get_max_temp(weather_dataset, attr, year, month=-1):
     """Calculates the given calculation on provided year and month
-
-    Args:
-        weather_dataset (dict): The main dataset
-        attr (string): The attribute on which calculation requires
-        year (int): year in which calculation is required
-        month (int, optional): Month on which calculation is required.
-            Skip to get complete years data. Defaults to -1.
-
-    Returns:
-        (float, datetime): calculation result, date from dataset
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
@@ -58,16 +48,6 @@ def get_max_temp(weather_dataset, attr, year, month=-1):
 
 def get_min_temp(weather_dataset, attr, year, month=-1):
     """calculates the minimum temperature on provided year and month
-
-    args:
-        weather_dataset (dict): the main dataset
-        attr (string): the attribute on which calculation requires
-        year (int): year in which calculation is required
-        month (int, optional): month on which calculation is required.
-            skip to get complete years data. defaults to -1.
-
-    returns:
-        (float, datetime): calculation result, date from dataset
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
@@ -81,16 +61,6 @@ def get_min_temp(weather_dataset, attr, year, month=-1):
 
 def get_mean_temp(weather_dataset, attr, year, month=-1):
     """calculates the mean temperature on provided year and month
-
-    args:
-        weather_dataset (dict): the main dataset
-        attr (string): the attribute on which calculation requires
-        year (int): year in which calculation is required
-        month (int, optional): month on which calculation is required.
-            skip to get complete years data. defaults to -1.
-
-    returns:
-        (float, datetime): calculation result, date from dataset
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
