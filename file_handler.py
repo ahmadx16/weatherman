@@ -5,7 +5,28 @@ import xlrd
 import datetime as dt
 
 
-def extract_files(path):
+def is_file_relevent(args, file_name):
+    """ Checks weather filename is relevent to query
+    """
+    
+    if file_name.startswith('weatherfiles/'):
+        # return True # debugline
+        if args.e:
+            if args.e.strftime("%Y") in file_name:
+                return True
+        if args.a:
+            if args.a.strftime("%Y") in file_name:
+                # Abbreviated month name check
+                if args.a.strftime("%b") in file_name:
+                    return True
+        if args.c:
+            if args.c.strftime("%Y") in file_name:
+                # Abbreviated month name.
+                if args.c.strftime("%b") in file_name:
+                    return True
+
+
+def extract_files(args, path):
     """Takes path to zip file, and extracts is on current dir. 
 
     Args:
@@ -18,9 +39,10 @@ def extract_files(path):
     try:
         with zipfile.ZipFile(os.path.join(path, "weatherfiles.zip"), 'r')\
                 as zip_ref:
-            for file in zip_ref.namelist():
-                if file.startswith('weatherfiles/'):
-                    zip_ref.extract(file)
+            for file_name in zip_ref.namelist():
+                if is_file_relevent(args, file_name):
+                    zip_ref.extract(file_name)
+
     except:
         print("Cannot find weatherfiles.zip on provided path.")
         exit()

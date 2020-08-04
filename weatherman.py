@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 import argparse
 import datetime as dt
 
@@ -46,7 +47,7 @@ def check_month_year(date):
     except:
         raise argparse.ArgumentTypeError(
             f"Date: {date} is not a valid date.\n"
-            "Corrent format e.g. 2012/6")
+            "Correct format e.g. 2012/6")
 
 
 def check_year(date):
@@ -110,6 +111,9 @@ def get_month_data(files_path, file_name):
         return (year, month, month_data)
 
 
+def delete_files():
+    shutil.rmtree("weatherfiles")
+
 def report_generator(args):
     # checking for arguments options
     if args.e:
@@ -148,10 +152,8 @@ def add_to_dataset(year, month, month_data):
 if __name__ == "__main__":
 
     args = handle_sys_argv()
-    print(args)
-
     zip_path = args.path.strip()
-    filenames = extract_files(zip_path)
+    filenames = extract_files(args, zip_path)
     files_path = "./weatherfiles"
 
     for file_name in filenames:
@@ -161,3 +163,4 @@ if __name__ == "__main__":
             add_to_dataset(year, month, month_data)
 
     report_generator(args)
+    # delete_files()
