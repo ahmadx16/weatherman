@@ -124,13 +124,20 @@ def get_month_data(files_path, file_name):
         return (year, month, month_data)
 
 
+def arg_date(arg):
+    """ Returns integer month and year of given arg
+    """
+    year, month = arg.strftime("%Y %m").split()
+    return (int(year), int(month))
+
+
 def generate_reports(args):
     """ Generates the yearly, monthly reports and charts
     """
 
     # generates report based on arguments given
     if args.e:
-        year = int(args.e.strftime("%Y"))
+        year, month = arg_date(args.e)
         if date_exists(year):
             year_report(weather_dataset, year)
         else:
@@ -138,8 +145,7 @@ def generate_reports(args):
                   "not exist in data set")
             print_correct_format()
     if args.a:
-        year, month = args.a.strftime("%Y %m").split()
-        year, month = int(year), int(month)
+        year, month = arg_date(args.a)
         if date_exists(year, month):
             month_report(weather_dataset, year, month)
         else:
@@ -147,8 +153,7 @@ def generate_reports(args):
                   "not exist in data set")
             print_correct_format()
     if args.c:
-        year, month = args.c.strftime("%Y %m").split()
-        year, month = int(year), int(month)
+        year, month = arg_date(args.c)
         if date_exists(year, month):
             month_chart(weather_dataset, year, month)
         else:
