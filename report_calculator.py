@@ -1,6 +1,18 @@
 import statistics
 
 
+def get_month_attr_values(weather_dataset, attr, year, month):
+    """Returns readings of a given attribute on given month 
+    """
+    
+    month_data = weather_dataset[year][month]
+    month_attr_values = [(day_data[attr],
+                          day_data[list(day_data.keys())[0]])
+                         for day_data in month_data
+                         if day_data[attr] is not None]
+    return month_attr_values
+
+
 def get_attr_values(weather_dataset, attr, year, month=-1):
     """Returns readings of a given attribute on given year/month 
     """
@@ -8,18 +20,12 @@ def get_attr_values(weather_dataset, attr, year, month=-1):
     attr_values = []
     if month == -1:
         year_data = weather_dataset[year]
-        attr_values = [(day_data[attr],
-                        day_data[list(day_data.keys())[0]])
-                       for month_data in year_data.values()
-                       for day_data in month_data
-                       if day_data[attr] is not None]
+        for month in year_data:
+            attr_values.extend(get_month_attr_values(weather_dataset, attr, year, month))
 
     else:
-        month_data = weather_dataset[year][month]
-        attr_values = [(day_data[attr],
-                        day_data[list(day_data.keys())[0]])
-                       for day_data in month_data
-                       if day_data[attr] is not None]
+        attr_values = get_month_attr_values(weather_dataset, attr, year, month)
+
     return attr_values
 
 
@@ -28,8 +34,7 @@ def get_max_attr(weather_dataset, attr, year, month=-1):
     """
     # get required attributes values
     attr_values = get_attr_values(weather_dataset, attr, year, month)
-    max_index = max(range(len(attr_values)),
-                    key=attr_values.__getitem__)
+    max_index = max(range(len(attr_values)), key=attr_values.__getitem__)
     max_value = attr_values[max_index][0]
     max_value_date = attr_values[max_index][1]
 
@@ -41,8 +46,7 @@ def get_min_attr(weather_dataset, attr, year, month=-1):
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
-    min_index = min(range(len(attr_values)),
-                    key=attr_values.__getitem__)
+    min_index = min(range(len(attr_values)), key=attr_values.__getitem__)
     min_value = attr_values[min_index][0]
     min_value_date = attr_values[min_index][1]
 

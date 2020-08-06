@@ -110,18 +110,18 @@ def date_exists(year, month=-1):
 def get_month_data(files_path, file_name):
     """ Return month data of a given file name
     """
+    year = month = month_data = 0
 
     if file_name.endswith(".txt"):
         year, month, month_data = handle_csv(files_path, file_name, ",")
-        return (year, month, month_data)
 
     elif file_name.endswith(".tsv"):
         year, month, month_data = handle_csv(files_path, file_name, "\t")
-        return (year, month, month_data)
 
     elif file_name.endswith(".xlsx"):
         year, month, month_data = handle_xlsx(files_path, file_name)
-        return (year, month, month_data)
+
+    return (year, month, month_data)
 
 
 def arg_date(arg):
@@ -181,10 +181,9 @@ if __name__ == "__main__":
     files_path = "./weatherfiles"
 
     for file_name in filenames:
-        data = get_month_data(files_path, file_name)
-        if data:
-            year, month, month_data = data
+        year, month, month_data = get_month_data(files_path, file_name)
+        if month_data:
             add_to_dataset(year, month, month_data)
 
     generate_reports(args)
-    delete_files()
+    # delete_files()

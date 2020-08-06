@@ -27,25 +27,31 @@ def filter_attributes(day_data):
             del day_data[key]
 
 
+def is_date_in_filename(arg, file_name, check_month=False):
+    """Check year and month in filename
+    """
+
+    if arg.strftime("%Y") in file_name:
+        if check_month:
+            if arg.strftime("%b") in file_name:
+                return True
+        else:
+            return True
+
+    return False
+
+
 def is_file_relevent(args, file_name):
     """ Checks filename is relevent to user query
     """
 
     if file_name.startswith('weatherfiles/'):
-        # return True # debugline
         if args.e:
-            if args.e.strftime("%Y") in file_name:
-                return True
+            return is_date_in_filename(args.e, file_name)
         if args.a:
-            if args.a.strftime("%Y") in file_name:
-                # Abbreviated month name check
-                if args.a.strftime("%b") in file_name:
-                    return True
+            return is_date_in_filename(args.a, file_name, check_month=True)
         if args.c:
-            if args.c.strftime("%Y") in file_name:
-                # Abbreviated month name.
-                if args.c.strftime("%b") in file_name:
-                    return True
+            return is_date_in_filename(args.c, file_name, check_month=True)
 
     return False
 
@@ -71,8 +77,11 @@ def extract_files(args, path):
                 if is_file_relevent(args, file_name):
                     zip_ref.extract(file_name)
 
-    except:
+    except FileNotFoundError:
         print("Cannot find weatherfiles.zip on provided path.")
+        exit()
+    except IOError:
+        print("Could not read weatherfiles.zip.")
         exit()
     else:
         filenames = os.listdir("./weatherfiles")
@@ -86,28 +95,35 @@ def clean_data_types(day_data):
         day_data (dict): Contains string readings of row
     """
 
+    time_attributes = ["PKT", "PKST"]
+    float_attributes = [
+        "Mean VisibilityKm",
+        "Max VisibilityKm",
+        "Min VisibilitykM",
+        "Precipitationmm",
+        "Mean Sea Level PressurehPa"
+    ]
+
     for k, attr in day_data.items():
-        if k == "PKT" or k == "PKST":
+
+        if k in time_attributes:
             day_data[k] = string_to_date(attr)
 
         elif k == "Events":
             event = attr
-            if event == '':
+            if event:
                 day_data[k] = None
 
         # converts attributes values to float
-        elif (k == "Mean VisibilityKm" or k == "Max VisibilityKm" or
-              k == "Min VisibilitykM" or k == "Precipitationmm" or
-              k == "Mean Sea Level PressurehPa"):
-
-            if attr != '':
+        elif k in float_attributes:
+            if attr:
                 day_data[k] = float(attr)
             else:
                 day_data[k] = None
 
         # converts attributes values to int
         else:
-            if attr != '':
+            if attr:
                 day_data[k] = int(attr)
             else:
                 day_data[k] = None
