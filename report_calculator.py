@@ -4,7 +4,7 @@ import statistics
 def get_month_attr_values(weather_dataset, attr, year, month):
     """Returns readings of a given attribute on given month 
     """
-    
+
     month_data = weather_dataset[year][month]
     month_attr_values = [(day_data[attr],
                           day_data[list(day_data.keys())[0]])
@@ -29,28 +29,19 @@ def get_attr_values(weather_dataset, attr, year, month=-1):
     return attr_values
 
 
-def get_max_attr(weather_dataset, attr, year, month=-1):
-    """Calculates max on given attribute 
-    """
-    # get required attributes values
-    attr_values = get_attr_values(weather_dataset, attr, year, month)
-    max_index = max(range(len(attr_values)), key=attr_values.__getitem__)
-    max_value = attr_values[max_index][0]
-    max_value_date = attr_values[max_index][1]
-
-    return (max_value, max_value_date)
-
-
-def get_min_attr(weather_dataset, attr, year, month=-1):
-    """calculates the minimum on provided year and month
+def get_value(weather_dataset, attr, value_type, year, month=-1):
+    """calculates the provided value on given year and month
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
-    min_index = min(range(len(attr_values)), key=attr_values.__getitem__)
-    min_value = attr_values[min_index][0]
-    min_value_date = attr_values[min_index][1]
+    if value_type == "min":
+        value_index = min(range(len(attr_values)), key=attr_values.__getitem__)
+    elif value_type == "max":
+        value_index = max(range(len(attr_values)), key=attr_values.__getitem__)
+    value = attr_values[value_index][0]
+    value_date = attr_values[value_index][1]
 
-    return (min_value, min_value_date)
+    return (value, value_date)
 
 
 def get_mean_attr(weather_dataset, attr, year, month=-1):

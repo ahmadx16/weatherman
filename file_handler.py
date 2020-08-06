@@ -6,6 +6,8 @@ import datetime as dt
 
 import xlrd
 
+from assist_functions import date_to_int
+
 
 # attributes that are relevent to calculations
 REQUIRED_ATTRIBUTES = (
@@ -22,7 +24,7 @@ def filter_attributes(day_data):
     """ Discards non relevent attributes from datastructure
     """
 
-    for key in list(day_data.keys()):
+    for key in list(day_data):
         if key not in REQUIRED_ATTRIBUTES:
             del day_data[key]
 
@@ -154,9 +156,8 @@ def handle_csv(path, file_name, delim):
             month_data.append(day_data)
 
     # getting year and month
-    date = month_data[0][list(month_data[0].keys())[0]]
-    year = int(date.strftime("%Y"))
-    month = int(date.strftime("%m"))
+    date = date_from_month_data(month_data)
+    year, month = date_to_int(date)
 
     return (year, month, month_data)
 
@@ -179,8 +180,7 @@ def handle_xlsx(path, file_name):
     cols = sheet.row_values(0)
     # getting year and month from 2nd row
     date = string_to_date(sheet.row_values(2)[0])
-    year = int(date.strftime("%Y"))
-    month = int(date.strftime("%m"))
+    year, month = date_to_int(date)
 
     for i in range(1, sheet.nrows):
         day_row = sheet.row_values(i)
@@ -204,6 +204,10 @@ def string_to_date(date_string):
         print("Invalid format of date found in dataset")
     else:
         return date
+
+
+def date_from_month_data(month_data):
+    return month_data[0][list(month_data[0].keys())[0]]
 
 
 def delete_files():

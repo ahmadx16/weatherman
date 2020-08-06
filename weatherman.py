@@ -8,6 +8,7 @@ import datetime as dt
 from report_printer import year_report, month_report, month_chart
 from file_handler import extract_files, handle_csv, handle_xlsx
 from file_handler import delete_files
+from assist_functions import date_to_int
 
 # globals
 # main data structure to store weather dataset
@@ -87,8 +88,7 @@ def print_correct_format():
 
     print("Following are the correct command examples:\n")
     print("python3 weatherman.py /path-to-zipfile -e 2011 ")
-    print("python3 weatherman.py /path-to-zipfile -e 2016 -a 2007/6" +
-          " -c 2009/5\n")
+    print("python3 weatherman.py /path-to-zipfile -e 2016 -a 2007/6 -c 2009/5\n")
     exit()
 
 
@@ -124,20 +124,13 @@ def get_month_data(files_path, file_name):
     return (year, month, month_data)
 
 
-def arg_date(arg):
-    """ Returns integer month and year of given arg
-    """
-    year, month = arg.strftime("%Y %m").split()
-    return (int(year), int(month))
-
-
 def generate_reports(args):
     """ Generates the yearly, monthly reports and charts
     """
 
     # generates report based on arguments given
     if args.e:
-        year, month = arg_date(args.e)
+        year, month = date_to_int(args.e)
         if date_exists(year):
             year_report(weather_dataset, year)
         else:
@@ -145,7 +138,7 @@ def generate_reports(args):
                   "not exist in data set")
             print_correct_format()
     if args.a:
-        year, month = arg_date(args.a)
+        year, month = date_to_int(args.a)
         if date_exists(year, month):
             month_report(weather_dataset, year, month)
         else:
@@ -153,7 +146,7 @@ def generate_reports(args):
                   "not exist in data set")
             print_correct_format()
     if args.c:
-        year, month = arg_date(args.c)
+        year, month = date_to_int(args.c)
         if date_exists(year, month):
             month_chart(weather_dataset, year, month)
         else:

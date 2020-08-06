@@ -1,4 +1,4 @@
-from report_calculator import get_attr_values, get_max_attr, get_min_attr, get_mean_attr
+from report_calculator import get_attr_values, get_mean_attr, get_value
 
 
 def year_report(weather_dataset, year):
@@ -8,9 +8,9 @@ def year_report(weather_dataset, year):
     Min Humidity of a given year.
     """
 
-    max_temp, max_temp_date = get_max_attr(weather_dataset, "Max TemperatureC", year)
-    min_temp, min_temp_date = get_min_attr(weather_dataset, "Min TemperatureC", year)
-    min_humid, min_humid_date = get_min_attr(weather_dataset, "Min Humidity", year)
+    max_temp, max_temp_date = get_value(weather_dataset, "Max TemperatureC", "max", year)
+    min_temp, min_temp_date = get_value(weather_dataset, "Min TemperatureC", "min", year)
+    min_humid, min_humid_date = get_value(weather_dataset, "Min Humidity", "min", year)
 
     print("-- Year {} Report --".format(year))
     print("Highest: {0}C on {1} {2}".format(max_temp,
