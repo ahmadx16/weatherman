@@ -124,35 +124,42 @@ def get_month_data(files_path, file_name):
     return (year, month, month_data)
 
 
+def report_correct_format(arg_flag):
+    """Gives user flag error and prints sample correct cases
+    """
+
+    print(f"The -{arg_flag} flag is given a date (year or month) that does not exist in data set")
+    print_correct_format()
+
+
+def generate_monthly(arg, arg_flag):
+    """Generate monthly report or chart based on given arguments
+    """
+
+    year, month = date_to_int(arg)
+    if date_exists(year, month):
+        if arg_flag == 'a':
+            month_report(weather_dataset, year, month)
+        elif arg_flag == 'c':
+            month_chart(weather_dataset, year, month)
+    else:
+        report_correct_format(arg_flag)
+
+
 def generate_reports(args):
     """ Generates the yearly, monthly reports and charts
     """
 
-    # generates report based on arguments given
     if args.e:
-        year, month = date_to_int(args.e)
+        year, _ = date_to_int(args.e)
         if date_exists(year):
             year_report(weather_dataset, year)
         else:
-            print("The -e flag is given a year that does " +
-                  "not exist in data set")
-            print_correct_format()
+            report_correct_format('e')
     if args.a:
-        year, month = date_to_int(args.a)
-        if date_exists(year, month):
-            month_report(weather_dataset, year, month)
-        else:
-            print("The -a flag is given a year/month that does " +
-                  "not exist in data set")
-            print_correct_format()
+        generate_monthly(args.a, 'a')
     if args.c:
-        year, month = date_to_int(args.c)
-        if date_exists(year, month):
-            month_chart(weather_dataset, year, month)
-        else:
-            print("The -c flag is given a year/month that does " +
-                  "not exist in data set")
-            print_correct_format()
+        generate_monthly(args.c, 'c')
 
 
 def add_to_dataset(year, month, month_data):
