@@ -46,14 +46,17 @@ def is_date_in_filename(arg, file_name, check_month=False):
 def is_file_relevent(args, file_name):
     """ Checks filename is relevent to user query
     """
-
+    
     if file_name.startswith('weatherfiles/'):
         if args.e:
-            return is_date_in_filename(args.e, file_name)
+            if is_date_in_filename(args.e, file_name):
+                return True
         if args.a:
-            return is_date_in_filename(args.a, file_name, check_month=True)
+            if is_date_in_filename(args.a, file_name, check_month=True):
+                return True
         if args.c:
-            return is_date_in_filename(args.c, file_name, check_month=True)
+            if is_date_in_filename(args.c, file_name, check_month=True):
+                return True 
 
     return False
 
@@ -200,7 +203,7 @@ def string_to_date(date_string):
 
     try:
         date = dt.datetime.strptime(date_string, "%Y-%m-%d")
-    except:
+    except ValueError:
         print("Invalid format of date found in dataset")
     else:
         return date

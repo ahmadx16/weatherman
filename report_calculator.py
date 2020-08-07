@@ -1,11 +1,10 @@
 import statistics
 
 
-def get_month_attr_values(weather_dataset, attr, year, month):
+def get_month_attr_values(month_data, attr):
     """Returns readings of a given attribute on given month 
     """
 
-    month_data = weather_dataset[year][month]
     month_attr_values = [(day_data[attr],
                           day_data[list(day_data.keys())[0]])
                          for day_data in month_data
@@ -18,13 +17,12 @@ def get_attr_values(weather_dataset, attr, year, month=-1):
     """
 
     attr_values = []
+    year_data = weather_dataset[year]
     if month == -1:
-        year_data = weather_dataset[year]
         for month in year_data:
-            attr_values.extend(get_month_attr_values(weather_dataset, attr, year, month))
-
+            attr_values.extend(get_month_attr_values(year_data[month], attr))
     else:
-        attr_values = get_month_attr_values(weather_dataset, attr, year, month)
+        attr_values = get_month_attr_values(year_data[month], attr)
 
     return attr_values
 

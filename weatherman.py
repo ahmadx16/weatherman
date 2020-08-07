@@ -60,7 +60,7 @@ def check_month_year(date):
     try:
         date = dt.datetime.strptime(date, "%Y/%m")
         return date
-    except:
+    except ValueError:
         raise argparse.ArgumentTypeError(
             f"Date: {date} is not a valid date.\n"
             "Correct format e.g. 2012/6")
@@ -73,7 +73,7 @@ def check_year(date):
     try:
         date = dt.datetime.strptime(date, "%Y")
         return date
-    except:
+    except ValueError:
         raise argparse.ArgumentTypeError(
             f"Year: {date} is not a valid date.\n" +
             "Correct year e.g. 2011")
@@ -179,4 +179,4 @@ if __name__ == "__main__":
             add_to_dataset(year, month, month_data)
 
     generate_reports(args)
-    # delete_files()
+    delete_files()
