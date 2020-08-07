@@ -1,5 +1,5 @@
 import statistics
-
+from operator import itemgetter
 
 def get_month_attr_values(month_data, attr):
     """Returns readings of a given attribute on given month 
@@ -32,14 +32,9 @@ def get_value(weather_dataset, attr, value_type, year, month=-1):
     """
 
     attr_values = get_attr_values(weather_dataset, attr, year, month)
-    if value_type == "min":
-        value_index = min(range(len(attr_values)), key=attr_values.__getitem__)
-    elif value_type == "max":
-        value_index = max(range(len(attr_values)), key=attr_values.__getitem__)
-    value = attr_values[value_index][0]
-    value_date = attr_values[value_index][1]
-
-    return (value, value_date)
+    limit_value_function = min if value_type == "min" else max
+    
+    return limit_value_function(attr_values, key=itemgetter(0))
 
 
 def get_mean_attr(weather_dataset, attr, year, month=-1):

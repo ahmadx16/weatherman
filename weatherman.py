@@ -8,11 +8,6 @@ import datetime as dt
 from report_printer import year_report, month_report, month_chart
 from file_handler import extract_files, handle_csv, handle_xlsx
 from file_handler import delete_files
-from assist_functions import date_to_int
-
-# globals
-# main data structure to store weather dataset
-weather_dataset = {}
 
 
 def handle_sys_argv():
@@ -48,9 +43,9 @@ def check_dir_path(path):
 
     if os.path.isdir(path):
         return path
-    else:
-        raise argparse.ArgumentTypeError(
-            f"readable_dir:{path} is not a valid path")
+
+    raise argparse.ArgumentTypeError(
+        f"readable_dir:{path} is not a valid path")
 
 
 def check_month_year(date):
@@ -58,8 +53,7 @@ def check_month_year(date):
     """
 
     try:
-        date = dt.datetime.strptime(date, "%Y/%m")
-        return date
+        return dt.datetime.strptime(date, "%Y/%m")
     except ValueError:
         raise argparse.ArgumentTypeError(
             f"Date: {date} is not a valid date.\n"
@@ -71,8 +65,7 @@ def check_year(date):
     """
 
     try:
-        date = dt.datetime.strptime(date, "%Y")
-        return date
+        return dt.datetime.strptime(date, "%Y")
     except ValueError:
         raise argparse.ArgumentTypeError(
             f"Year: {date} is not a valid date.\n" +
@@ -92,19 +85,16 @@ def print_correct_format():
     exit()
 
 
-def date_exists(year, month=-1):
+def date_exists(weather_dataset, year, month=-1):
     """Returns True if given month/year exists in weather dataset
     """
 
-    if year in weather_dataset:
-        if month != -1:
-            if month in weather_dataset[year]:
-                return True
-            else:
-                return False
-        return True
-    else:
+    if year not in weather_dataset:
         return False
+    if month != -1:
+        return month in weather_dataset[year]
+
+    return True
 
 
 def get_month_data(files_path, file_name):
@@ -132,37 +122,35 @@ def report_correct_format(arg_flag):
     print_correct_format()
 
 
-def generate_monthly(arg, arg_flag):
+def generate_monthly(weather_dataset, arg_date, arg_flag):
     """Generate monthly report or chart based on given arguments
     """
 
-    year, month = date_to_int(arg)
-    if date_exists(year, month):
+    if date_exists(weather_dataset, arg_date.year, arg_date.month):
         if arg_flag == 'a':
-            month_report(weather_dataset, year, month)
+            month_report(weather_dataset, arg_date.year, arg_date.month)
         elif arg_flag == 'c':
-            month_chart(weather_dataset, year, month)
+            month_chart(weather_dataset, arg_date.year, arg_date.month)
     else:
         report_correct_format(arg_flag)
 
 
-def generate_reports(args):
+def generate_reports(weather_dataset, args):
     """ Generates the yearly, monthly reports and charts
     """
 
     if args.e:
-        year, _ = date_to_int(args.e)
-        if date_exists(year):
+        if date_exists(weather_dataset, args.e.year):
             year_report(weather_dataset, year)
         else:
             report_correct_format('e')
     if args.a:
-        generate_monthly(args.a, 'a')
+        generate_monthly(weather_dataset, args.a, 'a')
     if args.c:
-        generate_monthly(args.c, 'c')
+        generate_monthly(weather_dataset, args.c, 'c')
 
 
-def add_to_dataset(year, month, month_data):
+def add_to_dataset(weather_dataset, year, month, month_data):
     """ adds month data to main dataset
     """
 
@@ -175,6 +163,8 @@ def add_to_dataset(year, month, month_data):
 
 if __name__ == "__main__":
 
+    # main data structure to store weather dataset
+    weather_dataset = {}
     args = handle_sys_argv()
     zip_path = args.path.strip()
     filenames = extract_files(args, zip_path)
@@ -183,7 +173,7 @@ if __name__ == "__main__":
     for file_name in filenames:
         year, month, month_data = get_month_data(files_path, file_name)
         if month_data:
-            add_to_dataset(year, month, month_data)
+            add_to_dataset(weather_dataset, year, month, month_data)
 
-    generate_reports(args)
+    generate_reports(weather_dataset, args)
     delete_files()

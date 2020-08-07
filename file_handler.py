@@ -6,8 +6,6 @@ import datetime as dt
 
 import xlrd
 
-from assist_functions import date_to_int
-
 
 # attributes that are relevent to calculations
 REQUIRED_ATTRIBUTES = (
@@ -46,7 +44,7 @@ def is_date_in_filename(arg, file_name, check_month=False):
 def is_file_relevent(args, file_name):
     """ Checks filename is relevent to user query
     """
-    
+
     if file_name.startswith('weatherfiles/'):
         if args.e:
             if is_date_in_filename(args.e, file_name):
@@ -56,7 +54,7 @@ def is_file_relevent(args, file_name):
                 return True
         if args.c:
             if is_date_in_filename(args.c, file_name, check_month=True):
-                return True 
+                return True
 
     return False
 
@@ -160,9 +158,8 @@ def handle_csv(path, file_name, delim):
 
     # getting year and month
     date = date_from_month_data(month_data)
-    year, month = date_to_int(date)
 
-    return (year, month, month_data)
+    return (date.year, date.month, month_data)
 
 
 def handle_xlsx(path, file_name):
@@ -183,7 +180,6 @@ def handle_xlsx(path, file_name):
     cols = sheet.row_values(0)
     # getting year and month from 2nd row
     date = string_to_date(sheet.row_values(2)[0])
-    year, month = date_to_int(date)
 
     for i in range(1, sheet.nrows):
         day_row = sheet.row_values(i)
@@ -194,7 +190,7 @@ def handle_xlsx(path, file_name):
         filter_attributes(day_data)
         clean_data_types(day_data)
         month_data.append(day_data)
-    return (year, month, month_data)
+    return (date.year, date.month, month_data)
 
 
 def string_to_date(date_string):
