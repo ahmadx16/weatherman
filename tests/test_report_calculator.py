@@ -2,35 +2,13 @@ import pytest
 import datetime as dt
 import statistics
 import report_calculator
-
-
-# Test Data
-weather_dataset = {2012: {3: [{"PKT": dt.datetime(2012, 3, 2), "Max TemperatureC": 12, "Min TemperatureC": 20},
-                              {"PKT": dt.datetime(2012, 3, 3), "Max TemperatureC": 30, "Min TemperatureC": 5},
-                              {"PKT": dt.datetime(2012, 3, 4), "Max TemperatureC": 57, "Min TemperatureC": 11},
-                              {"PKT": dt.datetime(2012, 3, 5), "Max TemperatureC": 40, "Min TemperatureC": 18}],
-
-                          4: [{"PKT": dt.datetime(2012, 4, 2), "Max TemperatureC": 20, "Min TemperatureC": 19},
-                              {"PKT": dt.datetime(2012, 4, 5), "Max TemperatureC": 22, "Min TemperatureC": 16},
-                              {"PKT": dt.datetime(2012, 4, 7), "Max TemperatureC": 25, "Min TemperatureC": 13},
-                              {"PKT": dt.datetime(2012, 4, 10), "Max TemperatureC": 16, "Min TemperatureC": 5}]
-                          },
-                   2014: {6: [{"PKT": dt.datetime(2014, 6, 2), "Max TemperatureC": 102, "Min TemperatureC": 20},
-                              {"PKT": dt.datetime(2014, 6, 3), "Max TemperatureC": 100, "Min TemperatureC": 25},
-                              {"PKT": dt.datetime(2014, 6, 4), "Max TemperatureC": 510, "Min TemperatureC": 101},
-                              {"PKT": dt.datetime(2014, 6, 5), "Max TemperatureC": 410, "Min TemperatureC": 110}],
-
-                          7: [{"PKT": dt.datetime(2014, 7, 2), "Max TemperatureC": 210, "Min TemperatureC": 110},
-                              {"PKT": dt.datetime(2014, 7, 5), "Max TemperatureC": 210, "Min TemperatureC": 111},
-                              {"PKT": dt.datetime(2014, 7, 7), "Max TemperatureC": 105, "Min TemperatureC": 122},
-                              {"PKT": dt.datetime(2014, 7, 10), "Max TemperatureC": 106, "Min TemperatureC": 120}]
-                          }
-                   }
+from test_data import weather_dataset
 
 
 def test_get_month_attr_values():
     """Tests "get_month_attr"  
     """
+
     month_data = [{"PKT": dt.datetime(2012, 1, 2), "Max TemperatureC": 12, "Min TemperatureC": 20},
                   {"PKT": dt.datetime(2012, 1, 3), "Max TemperatureC": 30, "Min TemperatureC": 5},
                   {"PKT": dt.datetime(2012, 1, 4), "Max TemperatureC": 57, "Min TemperatureC": 11},
@@ -126,16 +104,16 @@ def test_get_mean_attr():
     """
 
     # Expected Values
-    max_mean_2012 = statistics.mean([12,30,57,40,20,22,25,16])
+    max_mean_2012 = statistics.mean([12, 30, 57, 40, 20, 22, 25, 16])
     expected_2012_max = (max_mean_2012, dt.datetime(2012, 3, 2))
 
-    max_mean_2014 = statistics.mean([102,100,510,410,210,210,105,106])
+    max_mean_2014 = statistics.mean([102, 100, 510, 410, 210, 210, 105, 106])
     expected_2014_max = (max_mean_2014, dt.datetime(2014, 6, 2))
 
-    min_mean_2014 = statistics.mean([20,25,101,110,110,111,122,120])
+    min_mean_2014 = statistics.mean([20, 25, 101, 110, 110, 111, 122, 120])
     expected_2014_min = (min_mean_2014, dt.datetime(2014, 6, 2))
 
-    min_mean_2014_month_7 = statistics.mean([110,111,122,120])
+    min_mean_2014_month_7 = statistics.mean([110, 111, 122, 120])
     expected_2014_month_7_min = (min_mean_2014_month_7, dt.datetime(2014, 7, 2))
 
     # Actual Values
