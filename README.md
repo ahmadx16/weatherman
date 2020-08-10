@@ -165,10 +165,10 @@ The program will execute the tests present in `tests` directory and will show re
 **Example Output**
 
 ```shell
-tests/test_report_calculator.py::test_get_month_attr_values PASSED                                                                             [ 25%]
-tests/test_report_calculator.py::test_get_attr_values PASSED                                                                                   [ 50%]
-tests/test_report_calculator.py::test_get_value PASSED                                                                                         [ 75%]
-tests/test_report_calculator.py::test_get_mean_attr PASSED                                                                                     [100%]
+tests/test_report_calculator.py::test_get_month_attr_values PASSED                  [ 25%]
+tests/test_report_calculator.py::test_get_attr_values PASSED                        [ 50%]
+tests/test_report_calculator.py::test_get_value PASSED                              [ 75%]
+tests/test_report_calculator.py::test_get_mean_attr PASSED                          [100%]
 
-============================================= 4 passed in 0.03s ==============================================
+================================== 4 passed in 0.03s =====================================
 ```
