@@ -31,14 +31,13 @@ def is_date_in_filename(arg, file_name, check_month=False):
     """Check year and month in filename
     """
 
-    if arg.strftime("%Y") in file_name:
-        if check_month:
-            if arg.strftime("%b") in file_name:
-                return True
-        else:
-            return True
+    if arg.strftime("%Y") not in file_name:
+        return False
+    
+    if check_month:
+        return arg.strftime("%b") in file_name
 
-    return False
+    return True
 
 
 def is_file_relevent(args, file_name):
@@ -114,7 +113,7 @@ def clean_data_types(day_data):
 
         elif k == "Events":
             event = attr
-            if event:
+            if not event:
                 day_data[k] = None
 
         # converts attributes values to float
@@ -154,7 +153,8 @@ def handle_csv(path, file_name, delim):
             day_data = {cols[i].strip(): attr for i, attr in enumerate(row)}
             filter_attributes(day_data)
             clean_data_types(day_data)
-            month_data.append(day_data)
+            if day_data:
+                month_data.append(day_data)
 
     # getting year and month
     date = date_from_month_data(month_data)

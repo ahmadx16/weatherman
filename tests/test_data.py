@@ -78,3 +78,59 @@ expected_max_col_2012 = [(12, dt.datetime(2012, 3, 2)),
                          (22, dt.datetime(2012, 4, 5)),
                          (25, dt.datetime(2012, 4, 7)),
                          (16, dt.datetime(2012, 4, 10))]
+
+
+test_attributes_day_data = {
+    "test": 21,
+    "Wrong": 43,
+    "This is Correct": 2,
+    "Max TemperatureC": 12,
+    "Tes1": "this is test",
+    "PKST": dt.datetime(2016, 2, 4),
+    "Write": 44,
+    "Min Humidity": 45
+}
+
+expected_valid_day_data = {
+    "Max TemperatureC": 12,
+    "PKST": dt.datetime(2016, 2, 4),
+    "Min Humidity": 45
+}
+
+string_day_data = {
+    "Max TemperatureC": "12",
+    "Precipitationmm": "12.43",
+    "PKST": "2008-11-23",
+    "Events": "Raining"
+}
+
+expected_valid_type_day_data = {
+    "Max TemperatureC": 12,
+    "Precipitationmm": 12.43,
+    "PKST": dt.datetime(2008, 11, 23),
+    "Events": "Raining"
+}
+
+
+# from data in file /tests/MockData/test_file.txt
+expected_file_month_data = [
+    {"PKT": dt.datetime(2004, 7, 1),
+     "Max TemperatureC": 26,
+     "Min TemperatureC": 17,
+     "Mean Humidity": 43,
+     "Min Humidity": 39
+     },
+    {"PKT": dt.datetime(2004, 7, 2),
+     "Max TemperatureC": 23,
+     "Min TemperatureC": 22,
+     "Mean Humidity": 62,
+     "Min Humidity": 59
+     },
+    {"PKT": dt.datetime(2004, 7, 3),
+     "Max TemperatureC": 24,
+     "Min TemperatureC": 19,
+     "Mean Humidity": 56,
+     "Min Humidity": 49
+     }
+
+]
