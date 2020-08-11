@@ -111,6 +111,20 @@ expected_valid_type_day_data = {
     "Events": "Raining"
 }
 
+string_day_data_none = {
+    "Max TemperatureC": "",
+    "Precipitationmm": "",
+    "PKST": "",
+    "Events": ""
+}
+
+expected_valid_day_data_none = {
+    "Max TemperatureC": None,
+    "Precipitationmm": None,
+    "PKST": None,
+    "Events": None
+}
+
 
 # from data in file /tests/MockData/test_file.txt
 expected_file_month_data = [
@@ -133,4 +147,18 @@ expected_file_month_data = [
      "Min Humidity": 49
      }
 
+]
+
+
+class arg_test_obj:
+    # mock class for args
+    e = dt.datetime(2012, 3, 23)
+    a = dt.datetime(2013, 5, 26)
+    c = dt.datetime(2014, 6, 25)
+
+
+extracted_file_names_expected = [
+    "somefile2012.txt",
+    "somefile2013May.txt",
+    "somefile2014Jun.pdf",
 ]
