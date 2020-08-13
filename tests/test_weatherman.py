@@ -8,6 +8,7 @@ from test_data import weather_dataset
 
 weatherman = WeatherMan()
 
+
 def test_check_dir_path():
     path = "./tests/MockData/"
     actual_path = weatherman.check_dir_path(path)
@@ -38,19 +39,6 @@ def test_check_year():
     # invalid date format check
     with pytest.raises(ArgumentTypeError):
         weatherman.check_year("ninety nine")
-
-
-@pytest.mark.parametrize("year,month,expected", [
-    (2008, -1, False),
-    (2012, -1, True),
-    (2012, 1, False),
-    (2012, 3, True),
-    (2014, 7, True)
-])
-def test_date_exists(year, month, expected):
-    """Tests 'date_exists'
-    """
-    assert expected == weatherman.date_exists(weather_dataset, year, month)
 
 
 def test_get_month_data():

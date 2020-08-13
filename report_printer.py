@@ -1,46 +1,52 @@
 from report_calculator import ReportCalculator
+from utils import print_correct_format
 
 
 class ReportPrinter(ReportCalculator):
     """Class to print report
     """
 
-    def generate_monthly(self, weather_dataset, arg_date, arg_flag):
+    def __init__(self, weather_dataset, args):
+        super().__init__(weather_dataset)
+        self.weather_dataset = weather_dataset
+        self.args = args
+
+    def generate_monthly(self, arg_date, arg_flag):
         """Generate monthly report or chart based on given arguments
         """
 
-        if self.date_exists(weather_dataset, arg_date.year, arg_date.month):
+        if self.date_exists(arg_date.year, arg_date.month):
             if arg_flag == 'a':
-                self.month_report(weather_dataset, arg_date.year, arg_date.month)
+                self.month_report(arg_date.year, arg_date.month)
             elif arg_flag == 'c':
-                self.month_chart(weather_dataset, arg_date.year, arg_date.month)
+                self.month_chart(arg_date.year, arg_date.month)
         else:
-            report_correct_format(arg_flag)
+            self.report_correct_format(arg_flag)
 
-    def generate_reports(self, weather_dataset, args):
+    def generate_reports(self):
         """ Generates the yearly, monthly reports and charts
         """
-
+        args = self.args
         if args.e:
-            if self.date_exists(weather_dataset, args.e.year):
-                self.year_report(weather_dataset, args.e.year)
+            if self.date_exists(args.e.year):
+                self.year_report(args.e.year)
             else:
                 self.report_correct_format('e')
         if args.a:
-            self.generate_monthly(weather_dataset, args.a, 'a')
+            self.generate_monthly(args.a, 'a')
         if args.c:
-            self.generate_monthly(weather_dataset, args.c, 'c')
+            self.generate_monthly(args.c, 'c')
 
-    def year_report(self, weather_dataset, year):
+    def year_report(self, year):
         """Prints Report of a given year
 
         The report prints Max Temperature,Min Temperature and
         Min Humidity of a given year.
         """
 
-        max_temp, max_temp_date = super().get_value(weather_dataset, "Max TemperatureC", "max", year)
-        min_temp, min_temp_date = super().get_value(weather_dataset, "Min TemperatureC", "min", year)
-        min_humid, min_humid_date = super().get_value(weather_dataset, "Min Humidity", "min", year)
+        max_temp, max_temp_date = super().get_value("Max TemperatureC", "max", year)
+        min_temp, min_temp_date = super().get_value("Min TemperatureC", "min", year)
+        min_humid, min_humid_date = super().get_value("Min Humidity", "min", year)
 
         print("-- Year {} Report --".format(year))
         print("Highest: {0}C on {1} {2}".format(max_temp,
@@ -57,16 +63,16 @@ class ReportPrinter(ReportCalculator):
                                                    min_humid_date.strftime("%d")
                                                    ))
 
-    def month_report(self, weather_dataset, year, month):
+    def month_report(self, year, month):
         """Prints Report of a given month and year
 
         It prints 'Highest Average temperature', 'Lowest Average
         Temperature' and Averege Mean Humidity of a given month.
         """
 
-        avg_max_temp, month_date = super().get_mean_attr(weather_dataset, "Max TemperatureC", year, month)
-        avg_min_temp, month_date = super().get_mean_attr(weather_dataset, "Min TemperatureC", year, month)
-        avg_mean_humid, month_date = super().get_mean_attr(weather_dataset, "Mean Humidity", year, month)
+        avg_max_temp, month_date = super().get_mean_attr("Max TemperatureC", year, month)
+        avg_min_temp, month_date = super().get_mean_attr("Min TemperatureC", year, month)
+        avg_mean_humid, month_date = super().get_mean_attr("Mean Humidity", year, month)
 
         month_name = month_date.strftime("%B")
 
@@ -83,12 +89,12 @@ class ReportPrinter(ReportCalculator):
         RED = '\033[91m'
         ENDC = '\033[0m'
 
-    def month_chart(self, weather_dataset, year, month):
+    def month_chart(self, year, month):
         """Prints color charts on console of a given month
         """
 
-        high_temps = super().get_attr_values(weather_dataset, "Max TemperatureC",  year, month)
-        low_temps = super().get_attr_values(weather_dataset, "Min TemperatureC", year, month)
+        high_temps = super().get_attr_values("Max TemperatureC",  year, month)
+        low_temps = super().get_attr_values("Min TemperatureC", year, month)
 
         month_name = high_temps[0][1].strftime("%B")
 
@@ -118,13 +124,13 @@ class ReportPrinter(ReportCalculator):
         print(f"The -{arg_flag} flag is given a date (year or month) that does not exist in data set")
         print_correct_format()
 
-    def date_exists(self, weather_dataset, year, month=-1):
+    def date_exists(self, year, month=-1):
         """Returns True if given month/year exists in weather dataset
         """
 
-        if year not in weather_dataset:
+        if year not in self.weather_dataset:
             return False
         if month != -1:
-            return month in weather_dataset[year]
+            return month in self.weather_dataset[year]
 
         return True

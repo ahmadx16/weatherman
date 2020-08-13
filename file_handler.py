@@ -10,7 +10,7 @@ class FileHandler:
     """Class to handle file related functions
     """
 
-    # attributes that are relevent to calculations
+    # class attributes that are relevent to calculations
     REQUIRED_ATTRIBUTES = (
         "PKT",
         "PKST",

@@ -1,22 +1,21 @@
 import os
 import sys
-import shutil
 import argparse
 import datetime as dt
 
-
 from report_printer import ReportPrinter
 from file_handler import FileHandler
+from utils import print_correct_format
 
 
 class WeatherMan:
 
     def __init__(self):
-        # Initializing instance attributes
+        """Initializing instance attributes
+        """
         self.args = 0
         self.weather_dataset = {}
         self.file_handler = FileHandler()
-        self.report_printer = ReportPrinter()
 
     def handle_sys_argv(self):
         """Validates and parses sys arguments
@@ -39,7 +38,7 @@ class WeatherMan:
 
         if args.e == args.a == args.c == None:
             print("No arguments given")
-            self.print_correct_format()
+            print_correct_format()
             exit()
 
         self.args = args
@@ -47,19 +46,28 @@ class WeatherMan:
     def create_dataset(self):
         """Creates weatherman_dataset based on given arguments
         """
-        zip_path = self.args.path.strip()
-        filenames = self.file_handler.extract_files(self.args, zip_path)
-        files_path = "./weatherfiles"
+        if self.args:
+            zip_path = self.args.path.strip()
+            filenames = self.file_handler.extract_files(self.args, zip_path)
+            files_path = "./weatherfiles"
 
-        for file_name in filenames:
-            year, month, month_data = weatherman_obj.get_month_data(files_path, file_name)
-            if month_data:
-                self.add_to_dataset(self.weather_dataset, year, month, month_data)
+            for file_name in filenames:
+                year, month, month_data = weatherman_obj.get_month_data(files_path, file_name)
+                if month_data:
+                    self.add_to_dataset(self.weather_dataset, year, month, month_data)
+        else:
+            print('There are no args available. Please Call "handle_sys_argv" method first to handle sys arguments\n')
+            exit()
 
     def print_report(self):
         """Uses ReportPrinter class to print report
         """
-        self.report_printer.generate_reports(self.weather_dataset, self.args)
+        if len(self.weather_dataset):
+            report_printer = ReportPrinter(self.weather_dataset, self.args)
+            report_printer.generate_reports()
+        else:
+            print('There is no dataset available. Call "create_dataset" method first to create dataset\n')
+            exit()
 
     def check_dir_path(self, path):
         """ path check for argparse
@@ -92,29 +100,6 @@ class WeatherMan:
             raise argparse.ArgumentTypeError(
                 f"Year: {date} is not a valid date.\n" +
                 "Correct year e.g. 2011")
-
-    def print_correct_format(self):
-        """Prints examples of correct command format and exits code
-
-        Helper Function that assists, when user enters invalid command
-        to execute code
-        """
-
-        print("Following are the correct command examples:\n")
-        print("python3 weatherman.py /path-to-zipfile -e 2011 ")
-        print("python3 weatherman.py /path-to-zipfile -e 2016 -a 2007/6 -c 2009/5\n")
-        exit()
-
-    def date_exists(self, weather_dataset, year, month=-1):
-        """Returns True if given month/year exists in weather dataset
-        """
-
-        if year not in weather_dataset:
-            return False
-        if month != -1:
-            return month in weather_dataset[year]
-
-        return True
 
     def get_month_data(self, files_path, file_name):
         """ Return month data of a given file name
