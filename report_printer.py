@@ -8,7 +8,6 @@ class ReportPrinter(ReportCalculator):
 
     def __init__(self, weather_dataset, args):
         super().__init__(weather_dataset)
-        self.weather_dataset = weather_dataset
         self.args = args
 
     def generate_monthly(self, arg_date, arg_flag):
@@ -44,9 +43,9 @@ class ReportPrinter(ReportCalculator):
         Min Humidity of a given year.
         """
 
-        max_temp, max_temp_date = super().get_value("Max TemperatureC", "max", year)
-        min_temp, min_temp_date = super().get_value("Min TemperatureC", "min", year)
-        min_humid, min_humid_date = super().get_value("Min Humidity", "min", year)
+        max_temp, max_temp_date = self.get_value("Max TemperatureC", "max", year)
+        min_temp, min_temp_date = self.get_value("Min TemperatureC", "min", year)
+        min_humid, min_humid_date = self.get_value("Min Humidity", "min", year)
 
         print("-- Year {} Report --".format(year))
         print("Highest: {0}C on {1} {2}".format(max_temp,
@@ -70,9 +69,9 @@ class ReportPrinter(ReportCalculator):
         Temperature' and Averege Mean Humidity of a given month.
         """
 
-        avg_max_temp, month_date = super().get_mean_attr("Max TemperatureC", year, month)
-        avg_min_temp, month_date = super().get_mean_attr("Min TemperatureC", year, month)
-        avg_mean_humid, month_date = super().get_mean_attr("Mean Humidity", year, month)
+        avg_max_temp, month_date = self.get_mean_attr("Max TemperatureC", year, month)
+        avg_min_temp, month_date = self.get_mean_attr("Min TemperatureC", year, month)
+        avg_mean_humid, month_date = self.get_mean_attr("Mean Humidity", year, month)
 
         month_name = month_date.strftime("%B")
 
@@ -93,8 +92,8 @@ class ReportPrinter(ReportCalculator):
         """Prints color charts on console of a given month
         """
 
-        high_temps = super().get_attr_values("Max TemperatureC",  year, month)
-        low_temps = super().get_attr_values("Min TemperatureC", year, month)
+        high_temps = self.get_attr_values("Max TemperatureC",  year, month)
+        low_temps = self.get_attr_values("Min TemperatureC", year, month)
 
         month_name = high_temps[0][1].strftime("%B")
 
