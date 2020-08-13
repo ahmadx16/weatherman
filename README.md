@@ -138,3 +138,37 @@ February 2009
 05 ++ 0C - 2C
 ...
 ```
+
+## Unit Testing
+
+This program uses [pytest](https://docs.pytest.org/en/stable/) for *Unit Testing*. To install pytest execute following command:
+
+```shell
+pip install pytest
+```
+Check you have installed the correct version:
+
+```shell
+$ pytest --version
+pytest 6.0.1
+```
+Learn more about [pytest here](https://docs.pytest.org/en/stable/).
+
+### Running Tests:
+
+Run following command to execute the test cases:
+```shell
+python3 -m pytest tests/
+```
+The program will execute the tests present in `tests` directory and will show results *PASSED* or *FAILED* on the console.
+
+**Example Output**
+
+```shell
+tests/test_report_calculator.py::test_get_month_attr_values PASSED                  [ 25%]
+tests/test_report_calculator.py::test_get_attr_values PASSED                        [ 50%]
+tests/test_report_calculator.py::test_get_value PASSED                              [ 75%]
+tests/test_report_calculator.py::test_get_mean_attr PASSED                          [100%]
+
+================================== 4 passed in 0.03s =====================================
+```
