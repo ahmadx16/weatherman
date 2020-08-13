@@ -1,7 +1,7 @@
 import pytest
-import file_handler
 import datetime as dt
 
+from file_handler import FileHandler
 from test_data import weather_dataset
 from test_data import test_attributes_day_data, expected_valid_day_data
 from test_data import string_day_data, expected_valid_type_day_data
@@ -9,6 +9,7 @@ from test_data import expected_file_month_data
 from test_data import arg_test_obj, extracted_file_names_expected
 from test_data import string_day_data_none, expected_valid_day_data_none
 
+file_handler = FileHandler()
 
 def test_filter_attributes():
     """Test 'filter_attributes'

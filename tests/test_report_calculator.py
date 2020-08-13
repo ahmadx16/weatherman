@@ -1,13 +1,15 @@
 import pytest
 import datetime as dt
 import statistics
-import report_calculator
+from report_calculator import ReportCalculator
 
 from test_data import weather_dataset
 from test_data import expected_max_col_2012_3, expected_min_col_2012_3, expected_min_col_2012_4
 from test_data import expected_max_col_2012, expected_min_col_2012
 from test_data import expected_max_2012, expected_max_2014, expected_min_2014, expected_min_2014_7
 from test_data import expected_max_mean_2014, expected_max_mean_2012, expected_min_mean_2014, expected_min_mean_2014_7
+
+report_calculator = ReportCalculator()
 
 
 def test_get_month_attr_values():

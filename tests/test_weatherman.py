@@ -2,10 +2,11 @@ import pytest
 import datetime as dt
 from argparse import ArgumentTypeError
 
-import weatherman
+from weatherman import WeatherMan
 from test_data import expected_file_month_data
 from test_data import weather_dataset
 
+weatherman = WeatherMan()
 
 def test_check_dir_path():
     path = "./tests/MockData/"
