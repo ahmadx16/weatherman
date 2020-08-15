@@ -1,10 +1,8 @@
 import os
 import shutil
 import zipfile
-import csv
 import datetime as dt
 
-import xlrd
 
 class FileHandler:
     """Class to handle file related functions
@@ -20,7 +18,6 @@ class FileHandler:
         "Mean Humidity",
     )
 
-
     def filter_attributes(self, day_data):
         """ Discards non relevent attributes from datastructure
         """
@@ -29,19 +26,17 @@ class FileHandler:
             if key not in self.REQUIRED_ATTRIBUTES:
                 del day_data[key]
 
-
     def is_date_in_filename(self, arg, file_name, check_month=False):
         """Check year and month in filename
         """
 
         if arg.strftime("%Y") not in file_name:
             return False
-        
+
         if check_month:
             return arg.strftime("%b") in file_name
 
         return True
-
 
     def is_file_relevent(self, args, file_name):
         """ Checks filename is relevent to user query
@@ -59,7 +54,6 @@ class FileHandler:
                     return True
 
         return False
-
 
     def extract_files(self, args, path):
         """Extracts only relevent to query files on current directory 
@@ -91,7 +85,6 @@ class FileHandler:
         else:
             filenames = os.listdir("./weatherfiles")
             return filenames
-
 
     def clean_data_types(self, day_data):
         """Converts string data relevent type
@@ -133,69 +126,6 @@ class FileHandler:
                 else:
                     day_data[k] = None
 
-
-    def handle_csv(self, path, file_name, delim):
-        """Extracts the weather readings of a month present in csv files
-
-        Args:
-            path (string): path of the directory where file exists
-            file_name (string): name of file.
-            delim (string): The delimeter in which file is encoded
-
-        Returns:
-        (int, int, list[dic]): year, month, month_data
-        """
-
-        cols = []
-        month_data = []
-        with open(os.path.join(path, file_name), 'r') as csvfile:
-            csvreader = csv.reader(csvfile, delimiter=delim)
-            cols = next(csvreader)
-
-            for row in csvreader:
-                day_data = {cols[i].strip(): attr for i, attr in enumerate(row)}
-                self.filter_attributes(day_data)
-                self.clean_data_types(day_data)
-                if day_data:
-                    month_data.append(day_data)
-
-        # getting year and month
-        date = self.date_from_month_data(month_data)
-
-        return (date.year, date.month, month_data)
-
-
-    def handle_xlsx(self, path, file_name):
-        """Extracts the weather readings of a month present in .xlsx file
-
-        Args:
-            path (string): path of the directory where file exists
-            file_name (string): name of file.
-
-        Returns:
-            (int, int, list[dic]): year, month, month_data
-        """
-
-        book = xlrd.open_workbook(os.path.join(path, file_name))
-        sheet = book.sheet_by_index(0)
-
-        month_data = []
-        cols = sheet.row_values(0)
-        # getting year and month from 2nd row
-        date = self.string_to_date(sheet.row_values(2)[0])
-
-        for i in range(1, sheet.nrows):
-            day_row = sheet.row_values(i)
-            # converts the list of day data into dictionary
-            day_data = {cols[i].strip(): attr
-                        for i, attr in enumerate(day_row)
-                        if attr is not None}
-            self.filter_attributes(day_data)
-            self.clean_data_types(day_data)
-            month_data.append(day_data)
-        return (date.year, date.month, month_data)
-
-
     def string_to_date(self, date_string):
         """Converts the string date, in format yyyy-mm-dd, to datetime   
         """
@@ -207,10 +137,8 @@ class FileHandler:
         else:
             return date
 
-
     def date_from_month_data(self, month_data):
         return month_data[0][list(month_data[0].keys())[0]]
-
 
     def delete_files(self, folder_name):
         """deletes extracted files and folder

@@ -77,25 +77,3 @@ def test_clean_data_types():
     assert string_day_data == expected_valid_type_day_data
     assert string_day_data_none == expected_valid_day_data_none
 
-
-def test_handle_csv():
-    """Test handle csv
-    """
-
-    # file_data = file_handler.handle_csv("./MockData/", "test_file.txt", delim=",")
-    year, month, month_data = file_handler.handle_csv("./tests/MockData/", "test_file.txt", delim=",")
-
-    assert year == 2004
-    assert month == 7
-    assert month_data == expected_file_month_data
-
-
-def test_handle_xlsx():
-    """Test handle xlsx
-    """
-
-    # file_data = file_handler.handle_csv("./MockData/", "test_file.txt", delim=",")
-    year, month, month_data = file_handler.handle_xlsx("./tests/MockData/", "test_file.xlsx")
-    assert year == 2004
-    assert month == 7
-    assert month_data == expected_file_month_data

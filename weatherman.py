@@ -5,6 +5,8 @@ import datetime as dt
 
 from report_printer import ReportPrinter
 from file_handler import FileHandler
+from handle_csv import HandleCsv
+from handle_xlsx import HandleXlsx
 from utils import print_correct_format
 
 
@@ -101,21 +103,30 @@ class WeatherMan:
                 f"Year: {date} is not a valid date.\n" +
                 "Correct year e.g. 2011")
 
-    def get_month_data(self, files_path, file_name):
-        """ Return month data of a given file name
+    def handle_files(self, files_path, file_name):
+        """Handle different files based on their file types
         """
         year = month = month_data = 0
 
         if file_name.endswith(".txt"):
-            year, month, month_data = self.file_handler.handle_csv(files_path, file_name, ",")
+            handle_csv = HandleCsv(",")
+            year, month, month_data = handle_csv.handle(files_path, file_name)
 
         elif file_name.endswith(".tsv"):
-            year, month, month_data = self.file_handler.handle_csv(files_path, file_name, "\t")
+            handle_csv = HandleCsv("\t")
+            year, month, month_data = handle_csv.handle(files_path, file_name)
 
         elif file_name.endswith(".xlsx"):
-            year, month, month_data = self.file_handler.handle_xlsx(files_path, file_name)
+            handle_xlsx= HandleXlsx()
+            year, month, month_data = handle_xlsx.handle(files_path, file_name)
+        
+        return (year,month,month_data)
 
-        return (year, month, month_data)
+    def get_month_data(self, files_path, file_name):
+        """ Return month data of a given file name
+        """
+
+        return self.handle_files(files_path, file_name)
 
     def add_to_dataset(self, weather_dataset, year, month, month_data):
         """ adds month data to main dataset
