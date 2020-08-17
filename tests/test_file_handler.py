@@ -11,6 +11,7 @@ from test_data import string_day_data_none, expected_valid_day_data_none
 
 file_handler = FileHandler()
 
+
 def test_filter_attributes():
     """Test 'filter_attributes'"""
 
@@ -70,4 +71,3 @@ def test_clean_data_types():
     file_handler.clean_data_types(string_day_data_none)
     assert string_day_data == expected_valid_type_day_data
     assert string_day_data_none == expected_valid_day_data_none
-

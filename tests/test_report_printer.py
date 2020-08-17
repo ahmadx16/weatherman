@@ -4,6 +4,8 @@ from test_data import weather_dataset, arg_test_obj
 from report_printer import ReportPrinter
 
 report_printer = ReportPrinter(weather_dataset, arg_test_obj)
+
+
 @pytest.mark.parametrize("year,month,expected", [
     (2008, -1, False),
     (2012, -1, True),
