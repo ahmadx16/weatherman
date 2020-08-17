@@ -2,13 +2,26 @@ import os
 import csv
 from file_handler import FileHandler
 
+from utils import get_file_extension
+
+
 class HandleCsv(FileHandler):
     """For Handeling CSV files
     """
 
-    def __init__(self,delim):
+    extension_delims = {
+        ".txt": ",",
+        ".tsv": "\t"
+    }
+
+    def __init__(self):
         super().__init__()
-        self.delim = delim
+        
+
+    def get_delimeter(self, file_name):
+        """ Return delimenter corresponding to file type
+        """
+        return self.extension_delims[get_file_extension(file_name)]
 
     def handle(self, path, file_name):
         """Extracts the weather readings of a month present in csv files
@@ -21,10 +34,12 @@ class HandleCsv(FileHandler):
         (int, int, list[dic]): year, month, month_data
         """
 
+        delim = self.get_delimeter(file_name)
+
         cols = []
         month_data = []
         with open(os.path.join(path, file_name), 'r') as csvfile:
-            csvreader = csv.reader(csvfile, delimiter=self.delim)
+            csvreader = csv.reader(csvfile, delimiter=delim)
             cols = next(csvreader)
 
             for row in csvreader:

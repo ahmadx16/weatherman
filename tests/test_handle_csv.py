@@ -2,7 +2,7 @@ from handle_csv import HandleCsv
 
 from test_data import expected_file_month_data
 
-handle_csv = HandleCsv(",")
+handle_csv = HandleCsv()
 
 
 def test_handle_csv():

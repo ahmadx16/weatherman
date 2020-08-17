@@ -7,10 +7,16 @@ from report_printer import ReportPrinter
 from file_handler import FileHandler
 from handle_csv import HandleCsv
 from handle_xlsx import HandleXlsx
-from utils import print_correct_format
+from utils import print_correct_format, get_file_extension
 
 
 class WeatherMan:
+
+    file_ext_classes = {
+        ".txt": HandleCsv,
+        ".tsv": HandleCsv,
+        ".xlsx": HandleXlsx
+    }
 
     def __init__(self):
         """Initializing instance attributes
@@ -103,30 +109,18 @@ class WeatherMan:
                 f"Year: {date} is not a valid date.\n" +
                 "Correct year e.g. 2011")
 
-    def handle_files(self, files_path, file_name):
-        """Handle different files based on their file types
-        """
-        year = month = month_data = 0
-
-        if file_name.endswith(".txt"):
-            handle_csv = HandleCsv(",")
-            year, month, month_data = handle_csv.handle(files_path, file_name)
-
-        elif file_name.endswith(".tsv"):
-            handle_csv = HandleCsv("\t")
-            year, month, month_data = handle_csv.handle(files_path, file_name)
-
-        elif file_name.endswith(".xlsx"):
-            handle_xlsx= HandleXlsx()
-            year, month, month_data = handle_xlsx.handle(files_path, file_name)
-        
-        return (year,month,month_data)
+    def get_file_handler(self, file_name):
+        return self.file_ext_classes[get_file_extension(file_name)]
 
     def get_month_data(self, files_path, file_name):
         """ Return month data of a given file name
         """
 
-        return self.handle_files(files_path, file_name)
+        year = month = month_data = 0
+        file_handler = self.get_file_handler(file_name)()
+        year, month, month_data = file_handler.handle(files_path, file_name)
+
+        return (year, month, month_data)
 
     def add_to_dataset(self, weather_dataset, year, month, month_data):
         """ adds month data to main dataset
