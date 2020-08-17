@@ -1,59 +1,37 @@
 import os
 import sys
-import argparse
 import datetime as dt
 
 from report_printer import ReportPrinter
 from file_handler import FileHandler
 from handle_csv import HandleCsv
 from handle_xlsx import HandleXlsx
-from utils import print_correct_format, get_file_extension
+from handle_sys_arg import HandleSysArg
+from utils import get_file_extension
 
 
 class WeatherMan:
 
-    file_ext_classes = {
+    extension_to_file_handler = {
         ".txt": HandleCsv,
         ".tsv": HandleCsv,
         ".xlsx": HandleXlsx
     }
 
     def __init__(self):
-        """Initializing instance attributes
-        """
+        """Initializing instance attributes"""
+
         self.args = 0
         self.weather_dataset = {}
         self.file_handler = FileHandler()
 
     def handle_sys_argv(self):
-        """Validates and parses sys arguments
-        """
-
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            'path', type=self.check_dir_path,
-            help="path to folder containing weatherfiles.zip")
-        parser.add_argument(
-            '-e', nargs='?', type=self.check_year,
-            help="enter year to get yearly report")
-        parser.add_argument(
-            '-a', nargs='?', type=self.check_month_year,
-            help="enter year/month to get monthly report")
-        parser.add_argument(
-            '-c', nargs='?', type=self.check_month_year,
-            help="enter year/month to get monthly chart")
-        args = parser.parse_args()
-
-        if args.e == args.a == args.c == None:
-            print("No arguments given")
-            print_correct_format()
-            exit()
-
-        self.args = args
+        arg_handler = HandleSysArg()
+        self.args = arg_handler.handle_sys_argv()
 
     def create_dataset(self):
-        """Creates weatherman_dataset based on given arguments
-        """
+        """Creates weatherman_dataset based on given arguments"""
+
         if self.args:
             zip_path = self.args.path.strip()
             filenames = self.file_handler.extract_files(self.args, zip_path)
@@ -64,57 +42,22 @@ class WeatherMan:
                 if month_data:
                     self.add_to_dataset(self.weather_dataset, year, month, month_data)
         else:
-            print('There are no args available. Please Call "handle_sys_argv" method first to handle sys arguments\n')
+            print('There are no args available.\n')
             exit()
 
     def print_report(self):
-        """Uses ReportPrinter class to print report
-        """
-        if len(self.weather_dataset):
-            report_printer = ReportPrinter(self.weather_dataset, self.args)
-            report_printer.generate_reports()
-        else:
-            print('There is no dataset available. Call "create_dataset" method first to create dataset\n')
-            exit()
+        """Uses ReportPrinter class to print report"""
 
-    def check_dir_path(self, path):
-        """ path check for argparse
-        """
-
-        if os.path.isdir(path):
-            return path
-
-        raise argparse.ArgumentTypeError(
-            f"readable_dir:{path} is not a valid path")
-
-    def check_month_year(self, date):
-        """ date check for argparse
-        """
-
-        try:
-            return dt.datetime.strptime(date, "%Y/%m")
-        except ValueError:
-            raise argparse.ArgumentTypeError(
-                f"Date: {date} is not a valid date.\n"
-                "Correct format e.g. 2012/6")
-
-    def check_year(self, date):
-        """ year check for argparse
-        """
-
-        try:
-            return dt.datetime.strptime(date, "%Y")
-        except ValueError:
-            raise argparse.ArgumentTypeError(
-                f"Year: {date} is not a valid date.\n" +
-                "Correct year e.g. 2011")
+        report_printer = ReportPrinter(self.weather_dataset, self.args)
+        report_printer.generate_reports()
 
     def get_file_handler(self, file_name):
-        return self.file_ext_classes[get_file_extension(file_name)]
+        """Returns relevent class based on file extension"""
+
+        return self.extension_to_file_handler[get_file_extension(file_name)]
 
     def get_month_data(self, files_path, file_name):
-        """ Return month data of a given file name
-        """
+        """Return month data of a given file name"""
 
         year = month = month_data = 0
         file_handler = self.get_file_handler(file_name)()
@@ -123,8 +66,7 @@ class WeatherMan:
         return (year, month, month_data)
 
     def add_to_dataset(self, weather_dataset, year, month, month_data):
-        """ adds month data to main dataset
-        """
+        """adds month data to main dataset"""
 
         if year in weather_dataset:
             weather_dataset[year][month] = month_data
@@ -133,6 +75,8 @@ class WeatherMan:
             weather_dataset[year][month] = month_data
 
     def delete_weatherfiles(self):
+        """Deletes the extracted folder"""
+
         self.file_handler.delete_files("weatherfiles")
 
 

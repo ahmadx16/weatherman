@@ -12,8 +12,7 @@ from test_data import string_day_data_none, expected_valid_day_data_none
 file_handler = FileHandler()
 
 def test_filter_attributes():
-    """Test 'filter_attributes'
-    """
+    """Test 'filter_attributes'"""
 
     file_handler.filter_attributes(test_attributes_day_data)
     assert expected_valid_day_data == test_attributes_day_data
@@ -26,8 +25,7 @@ def test_filter_attributes():
     (dt.datetime(2012, 3, 3), "somefileMar", True, False),
 ])
 def test_is_date_in_filename(date, file_name, check_month, expected):
-    """test 'is_date_in_filename'
-    """
+    """test 'is_date_in_filename' """
     assert file_handler.is_date_in_filename(date, file_name, check_month=check_month) == expected
 
 
@@ -39,14 +37,12 @@ def test_is_date_in_filename(date, file_name, check_month, expected):
 
 ])
 def test_is_file_relevent(file_name, expected):
-    """Test 'is_file_relevent'
-    """
+    """Test 'is_file_relevent'"""
     assert expected == file_handler.is_file_relevent(arg_test_obj, file_name)
 
 
 def test_extract_files():
-    """Test 'extract_files'
-    """
+    """Test 'extract_files'"""
     extracted_file_names_actual = file_handler.extract_files(arg_test_obj, "./tests/MockData/")
     assert extracted_file_names_actual.sort() == extracted_file_names_expected.sort()
 
@@ -58,8 +54,7 @@ def test_extract_files():
     ("2050-7-30", dt.datetime(2050, 7, 30)),
 ])
 def test_string_to_date(string_date, date, capsys):
-    """Test 'string_to_date'
-    """
+    """Test 'string_to_date'"""
     assert file_handler.string_to_date(string_date) == date
 
     # Testing exception case
@@ -69,8 +64,7 @@ def test_string_to_date(string_date, date, capsys):
 
 
 def test_clean_data_types():
-    """Test 'clean data types'
-    """
+    """Test 'clean data types'"""
 
     file_handler.clean_data_types(string_day_data)
     file_handler.clean_data_types(string_day_data_none)

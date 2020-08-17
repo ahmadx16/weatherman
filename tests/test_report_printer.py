@@ -12,6 +12,5 @@ report_printer = ReportPrinter(weather_dataset, arg_test_obj)
     (2014, 7, True)
 ])
 def test_date_exists(year, month, expected):
-    """Tests 'date_exists'
-    """
+    """Tests 'date_exists'"""
     assert expected == report_printer.date_exists(year, month)

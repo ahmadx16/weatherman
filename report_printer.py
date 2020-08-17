@@ -3,34 +3,35 @@ from utils import print_correct_format
 
 
 class ReportPrinter(ReportCalculator):
-    """Class to print report
-    """
+    """Class to print report"""
 
     def __init__(self, weather_dataset, args):
         super().__init__(weather_dataset)
         self.args = args
 
     def generate_monthly(self, arg_date, arg_flag):
-        """Generate monthly report or chart based on given arguments
-        """
+        """Generate monthly report or chart based on given arguments"""
 
         if self.date_exists(arg_date.year, arg_date.month):
-            if arg_flag == 'a':
-                self.month_report(arg_date.year, arg_date.month)
-            elif arg_flag == 'c':
-                self.month_chart(arg_date.year, arg_date.month)
+            month_function = self.month_report if arg_flag == "a" else self.month_chart
+            month_function(arg_date.year, arg_date.month)
         else:
             self.report_correct_format(arg_flag)
 
+    def generate_yearly(self, arg_date):
+        """Generate yearly report on given date"""
+
+        if self.date_exists(arg_date.year):
+            self.year_report(arg_date.year)
+        else:
+            self.report_correct_format('e')
+
     def generate_reports(self):
-        """ Generates the yearly, monthly reports and charts
-        """
+        """ Generates the yearly, monthly reports and charts"""
+
         args = self.args
         if args.e:
-            if self.date_exists(args.e.year):
-                self.year_report(args.e.year)
-            else:
-                self.report_correct_format('e')
+            self.generate_yearly(args.e)
         if args.a:
             self.generate_monthly(args.a, 'a')
         if args.c:
@@ -81,16 +82,19 @@ class ReportPrinter(ReportCalculator):
         print("Average Mean Humidity: {:.0f}% \n".format(round(avg_mean_humid, 1)))
 
     class Colors:
-        """Class for colored text on console 
-        """
+        """Class for colored text on console"""
 
         BLUE = '\033[94m'
         RED = '\033[91m'
         ENDC = '\033[0m'
 
+    def get_temp_dict(self, temps):
+        """Make readings to dictionary"""
+
+        return {attr[1]: attr[0] for attr in temps}
+
     def month_chart(self, year, month):
-        """Prints color charts on console of a given month
-        """
+        """Prints color charts on console of a given month"""
 
         high_temps = self.get_attr_values("Max TemperatureC",  year, month)
         low_temps = self.get_attr_values("Min TemperatureC", year, month)
@@ -99,8 +103,8 @@ class ReportPrinter(ReportCalculator):
 
         # Saving max temperature and min temperature in dictionaries
         # key is datetime object
-        high_temps = {attr[1]: attr[0] for attr in high_temps}
-        low_temps = {attr[1]: attr[0] for attr in low_temps}
+        temps = (high_temps, low_temps)
+        high_temps, low_temps = map(self.get_temp_dict, temps)
 
         # prints colored chart
         print("{0} {1}".format(month_name, year))
@@ -117,15 +121,13 @@ class ReportPrinter(ReportCalculator):
             print(str(high_temps[k])+"C", end='\n')
 
     def report_correct_format(self, arg_flag):
-        """Gives user flag error and prints sample correct cases
-        """
+        """Gives user flag error and prints sample correct cases"""
 
         print(f"The -{arg_flag} flag is given a date (year or month) that does not exist in data set")
         print_correct_format()
 
     def date_exists(self, year, month=-1):
-        """Returns True if given month/year exists in weather dataset
-        """
+        """Returns True if given month/year exists in weather dataset"""
 
         if year not in self.weather_dataset:
             return False

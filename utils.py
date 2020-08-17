@@ -15,6 +15,5 @@ def print_correct_format():
 
 
 def get_file_extension(file_name):
-    """Returns file extensions
-    """
+    """Returns file extensions"""
     return os.path.splitext(file_name)[1]

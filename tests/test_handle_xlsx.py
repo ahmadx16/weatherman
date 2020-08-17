@@ -6,8 +6,7 @@ handle_xlsx = HandleXlsx()
 
 
 def test_handle_xlsx():
-    """Test handle xlsx
-    """
+    """Test handle xlsx"""
 
     # file_data = file_handler.handle_csv("./MockData/", "test_file.txt", delim=",")
     year, month, month_data = handle_xlsx.handle("./tests/MockData/", "test_file.xlsx")

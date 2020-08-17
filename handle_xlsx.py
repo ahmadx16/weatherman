@@ -3,9 +3,9 @@ import xlrd
 
 from file_handler import FileHandler
 
+
 class HandleXlsx(FileHandler):
-    """For Handeling Xlsx files
-    """
+    """For Handeling Xlsx files"""
 
     def __init__(self):
         super().__init__()

@@ -6,22 +6,19 @@ from utils import get_file_extension
 
 
 class HandleCsv(FileHandler):
-    """For Handeling CSV files
-    """
+    """For Handeling CSV files"""
 
-    extension_delims = {
+    extension_to_delimeter = {
         ".txt": ",",
         ".tsv": "\t"
     }
 
     def __init__(self):
         super().__init__()
-        
 
     def get_delimeter(self, file_name):
-        """ Return delimenter corresponding to file type
-        """
-        return self.extension_delims[get_file_extension(file_name)]
+        """ Return delimenter corresponding to file type"""
+        return self.extension_to_delimeter[get_file_extension(file_name)]
 
     def handle(self, path, file_name):
         """Extracts the weather readings of a month present in csv files

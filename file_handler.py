@@ -5,8 +5,7 @@ import datetime as dt
 
 
 class FileHandler:
-    """Class to handle file related functions
-    """
+    """Class to handle file related functions"""
 
     # class attributes that are relevent to calculations
     REQUIRED_ATTRIBUTES = (
@@ -19,16 +18,14 @@ class FileHandler:
     )
 
     def filter_attributes(self, day_data):
-        """ Discards non relevent attributes from datastructure
-        """
+        """ Discards non relevent attributes from datastructure"""
 
         for key in list(day_data):
             if key not in self.REQUIRED_ATTRIBUTES:
                 del day_data[key]
 
     def is_date_in_filename(self, arg, file_name, check_month=False):
-        """Check year and month in filename
-        """
+        """Check year and month in filename"""
 
         if arg.strftime("%Y") not in file_name:
             return False
@@ -39,8 +36,7 @@ class FileHandler:
         return True
 
     def is_file_relevent(self, args, file_name):
-        """ Checks filename is relevent to user query
-        """
+        """ Checks filename is relevent to user query"""
 
         if file_name.startswith('weatherfiles/'):
             if args.e:
@@ -108,27 +104,18 @@ class FileHandler:
                 day_data[k] = self.string_to_date(attr)
 
             elif k == "Events":
-                event = attr
-                if not event:
-                    day_data[k] = None
+                day_data[k] = attr if attr else None
 
             # converts attributes values to float
             elif k in float_attributes:
-                if attr:
-                    day_data[k] = float(attr)
-                else:
-                    day_data[k] = None
+                day_data[k] = float(attr) if attr else None
 
             # converts attributes values to int
             else:
-                if attr:
-                    day_data[k] = int(attr)
-                else:
-                    day_data[k] = None
+                day_data[k] = int(attr) if attr else None
 
     def string_to_date(self, date_string):
-        """Converts the string date, in format yyyy-mm-dd, to datetime   
-        """
+        """Converts the string date, in format yyyy-mm-dd, to datetime"""
 
         try:
             date = dt.datetime.strptime(date_string, "%Y-%m-%d")
@@ -138,10 +125,11 @@ class FileHandler:
             return date
 
     def date_from_month_data(self, month_data):
+        """Returns first date from month"""
+
         return month_data[0][list(month_data[0].keys())[0]]
 
     def delete_files(self, folder_name):
-        """deletes extracted files and folder
-        """
+        """deletes extracted files and folder"""
 
         shutil.rmtree(folder_name)
