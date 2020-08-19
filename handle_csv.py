@@ -35,18 +35,28 @@ class HandleCsv(FileHandler):
 
         cols = []
         month_data = []
-        with open(os.path.join(path, file_name), 'r') as csvfile:
-            csvreader = csv.reader(csvfile, delimiter=delim)
-            cols = next(csvreader)
+        try:
+            with open(os.path.join(path, file_name), 'r') as csvfile:
+                csvreader = csv.reader(csvfile, delimiter=delim)
+                cols = next(csvreader)
 
-            for row in csvreader:
-                day_data = {cols[i].strip(): attr for i, attr in enumerate(row)}
-                self.filter_attributes(day_data)
-                self.clean_data_types(day_data)
-                if day_data:
-                    month_data.append(day_data)
+                for row in csvreader:
+                    day_data = {cols[i].strip(): attr for i, attr in enumerate(row)}
+                    self.filter_attributes(day_data)
+                    self.clean_data_types(day_data)
+                    if day_data:
+                        month_data.append(day_data)
 
-        # getting year and month
-        date = self.date_from_month_data(month_data)
+            # getting year and month
+            date = self.date_from_month_data(month_data)
+            return (date.year, date.month, month_data)
 
-        return (date.year, date.month, month_data)
+        except (AttributeError, ValueError):
+            print(f"File {file_name} contains invalid format\n")
+            exit()
+        except IOError:
+            print(f"Could not read file {file_name}\n")
+            exit()
+        except IndexError:
+            print(f"File {file_name} does not contain enough data\n")
+            exit()
