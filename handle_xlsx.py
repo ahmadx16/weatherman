@@ -27,8 +27,7 @@ class HandleXlsx(FileHandler):
         month_data = []
         cols = sheet.row_values(0)
         # getting year and month from 2nd row
-        date = self.string_to_date(sheet.row_values(2)[0])
-
+        date = self.string_to_date(sheet.row_values(1)[0])
         for i in range(1, sheet.nrows):
             day_row = sheet.row_values(i)
             # converts the list of day data into dictionary

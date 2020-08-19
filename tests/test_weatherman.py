@@ -16,9 +16,15 @@ def test_get_month_data():
     actual_tsv_data = weatherman.get_month_data("./tests/MockData/", "test_file.tsv")
     actual_xlsx_data = weatherman.get_month_data("./tests/MockData/", "test_file.xlsx")
 
-    assert actual_txt_data == (2004, 7, expected_file_month_data)
-    assert actual_tsv_data == (2004, 7, expected_file_month_data)
-    assert actual_xlsx_data == (2004, 7, expected_file_month_data)
+    actual_values = (actual_txt_data,
+                     actual_tsv_data,
+                     actual_xlsx_data
+                     )
+    expected_values = ((2004, 7, expected_file_month_data),
+                       (2004, 7, expected_file_month_data),
+                       (2004, 7, expected_file_month_data)
+                       )
+    assert actual_values == expected_values
 
 
 def test_add_to_dataset():

@@ -65,8 +65,7 @@ class FileHandler:
         os.mkdir("weatherfiles")
 
         try:
-            with zipfile.ZipFile(os.path.join(path, "weatherfiles.zip"), 'r')\
-                    as zip_ref:
+            with zipfile.ZipFile(os.path.join(path, "weatherfiles.zip"), 'r') as zip_ref:
                 for file_name in zip_ref.namelist():
                     # check and extract only relevent files
                     if self.is_file_relevent(args, file_name):
@@ -99,7 +98,6 @@ class FileHandler:
         ]
 
         for k, attr in day_data.items():
-
             if k in time_attributes:
                 day_data[k] = self.string_to_date(attr)
 

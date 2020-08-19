@@ -21,8 +21,13 @@ def test_get_month_attr_values():
     actual_max_2012_3 = report_calculator.get_month_attr_values(month_data, "Max TemperatureC")
     actual_min_2012_3 = report_calculator.get_month_attr_values(month_data, "Min TemperatureC")
 
-    assert actual_max_2012_3 == expected_max_col_2012_3
-    assert actual_min_2012_3 == expected_min_col_2012_3
+    actual_values = (actual_max_2012_3,
+                     actual_min_2012_3
+                     )
+    expected_values = (expected_max_col_2012_3,
+                       expected_min_col_2012_3,
+                       )
+    assert actual_values == expected_values
 
 
 def test_get_attr_values():
@@ -35,10 +40,17 @@ def test_get_attr_values():
     actual_min_2012 = report_calculator.get_attr_values("Min TemperatureC", year=2012)
     actual_max_2012 = report_calculator.get_attr_values("Max TemperatureC", year=2012)
 
-    assert expected_min_col_2012_3 == actual_min_2012_3
-    assert expected_min_col_2012_4 == actual_min_2012_4
-    assert expected_min_col_2012 == actual_min_2012
-    assert expected_max_col_2012 == actual_max_2012
+    actual_values = (actual_min_2012_3,
+                     actual_min_2012_4,
+                     actual_min_2012,
+                     actual_max_2012
+                     )
+    expected_values = (expected_min_col_2012_3,
+                       expected_min_col_2012_4,
+                       expected_min_col_2012,
+                       expected_max_col_2012,
+                       )
+    assert actual_values == expected_values
 
 
 def test_get_value():
@@ -50,10 +62,17 @@ def test_get_value():
     actual_min_2014 = report_calculator.get_value("Min TemperatureC", "min", year=2014)
     actual_min_2014_7 = report_calculator.get_value("Min TemperatureC", "min", year=2014, month=7)
 
-    assert expected_max_2012 == actual_max_2012
-    assert expected_max_2014 == actual_max_2014
-    assert expected_min_2014 == actual_min_2014
-    assert expected_min_2014_7 == actual_min_2014_7
+    actual_values = (actual_max_2012,
+                     actual_max_2014,
+                     actual_min_2014,
+                     actual_min_2014_7
+                     )
+    expected_values = (expected_max_2012,
+                       expected_max_2014,
+                       expected_min_2014,
+                       expected_min_2014_7,
+                       )
+    assert actual_values == expected_values
 
 
 def test_get_mean_attr():
@@ -65,7 +84,14 @@ def test_get_mean_attr():
     actual_min_mean_2014_ = report_calculator.get_mean_attr("Min TemperatureC", year=2014)
     actual_min_mean_2014_7 = report_calculator.get_mean_attr("Min TemperatureC", year=2014, month=7)
 
-    assert expected_max_mean_2012 == actual_max_mean_2012
-    assert expected_max_mean_2014 == actual_max_mean_2014
-    assert expected_min_mean_2014 == actual_min_mean_2014_
-    assert expected_min_mean_2014_7 == actual_min_mean_2014_7
+    actual_values = (actual_max_mean_2012,
+                     actual_max_mean_2014,
+                     actual_min_mean_2014_,
+                     actual_min_mean_2014_7
+                     )
+    expected_values = (expected_max_mean_2012,
+                       expected_max_mean_2014,
+                       expected_min_mean_2014,
+                       expected_min_mean_2014_7,
+                       )
+    assert actual_values == expected_values

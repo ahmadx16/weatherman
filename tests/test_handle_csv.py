@@ -11,6 +11,12 @@ def test_handle_csv():
     # file_data = file_handler.handle_csv("./MockData/", "test_file.txt", delim=",")
     year, month, month_data = handle_csv.handle("./tests/MockData/", "test_file.txt")
 
-    assert year == 2004
-    assert month == 7
-    assert month_data == expected_file_month_data
+    actual_values = (year,
+                     month,
+                     month_data
+                     )
+    expected_values = (2004,
+                       7,
+                       expected_file_month_data
+                       )
+    assert actual_values == expected_values

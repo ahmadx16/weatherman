@@ -69,5 +69,11 @@ def test_clean_data_types():
 
     file_handler.clean_data_types(string_day_data)
     file_handler.clean_data_types(string_day_data_none)
-    assert string_day_data == expected_valid_type_day_data
-    assert string_day_data_none == expected_valid_day_data_none
+
+    actual_values = (string_day_data,
+                     string_day_data_none
+                     )
+    expected_values = (expected_valid_type_day_data,
+                       expected_valid_day_data_none
+                       )
+    assert actual_values == expected_values

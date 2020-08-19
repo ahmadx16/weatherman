@@ -29,7 +29,6 @@ class HandleSysArg:
         if args.e == args.a == args.c == None:
             print("No arguments given. You must at least use one out of -e -a -c in arguments")
             print_correct_format()
-            exit()
 
         return args
 

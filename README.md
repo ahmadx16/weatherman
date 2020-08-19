@@ -84,7 +84,6 @@ To diplay charts of a given month simply run command
 python3 weatherman.py /path/to/zip-file -a YEAR/MONTH
 ```
 
-
 **Example Command:**
 
 ```shell
@@ -108,8 +107,6 @@ You can also print multiple reports providing relevent flag arguments
 * -e for year report
 * -a for month report
 * -c for month chart
-
-
 
 **Example Command:**
 
