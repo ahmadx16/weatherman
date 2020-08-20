@@ -116,11 +116,9 @@ class FileHandler:
         """Converts the string date, in format yyyy-mm-dd, to datetime"""
 
         try:
-            date = dt.datetime.strptime(date_string, "%Y-%m-%d")
+            return dt.datetime.strptime(date_string, "%Y-%m-%d")
         except ValueError:
             print("Invalid format of date found in dataset")
-        else:
-            return date
 
     def date_from_month_data(self, month_data):
         """Returns first date from month"""
