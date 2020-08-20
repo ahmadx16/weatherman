@@ -1,0 +1,5 @@
+PKT,Max TemperatureC,Mean TemperatureC,Min TemperatureC,Dew PointC,MeanDew PointC,Min DewpointC,Max Humidity,Mean Humidity,Min Humidity,Events,Mean VisibilityKm
+2004-7-1,26,22,17,16,13,6,45,43,39,Rain,
+2004-7-2,23,23,22,17,16,15,64,62,59,,12.8
+2004-7-3,24,,19,17,14,11,63,56,49,Thunder,11.98
+

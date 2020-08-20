@@ -1,0 +1,13 @@
+/weatherfiles.zip
+weatherfiles
+__MACOSX
+__pycache__
+Weatherman.pdf
+.vscode
+tests/__pycache__
+tests/.pytest_cache
+.pytest_cache
+unit_tests/__pycache__
+unit_tests/.pytest_cache
+temptest
+class
